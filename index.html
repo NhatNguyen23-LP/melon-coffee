@@ -10,10 +10,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Melon POS">
     
-    <!-- Phục hồi icon miếng dưa lưới (favicon) nguyên bản trong suốt -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍈</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23FFF0E6'/><text y='72' x='12' font-size='75'>🍈</text></svg>">
-    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Melon%20Coffee%20POS%22%2C%22short_name%22%3A%22Melon%20POS%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFF0E6%22%2C%22theme_color%22%3A%22%23FF6600%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Crect%20width%3D'100'%20height%3D'100'%20fill%3D'%23FFF0E6'%2F%3E%3Ctext%20y%3D'72'%20x%3D'12'%20font-size%3D'75'%3E%F0%9F%8D%88%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+    <link rel="icon" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Melon%20Coffee%20POS%22%2C%22short_name%22%3A%22Melon%20POS%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFF0E6%22%2C%22theme_color%22%3A%22%23FF6600%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22icon.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -38,12 +38,13 @@
         
         .logo-title { display: flex; align-items: center; gap: 10px; color: var(--cam-chinh); font-size: 1.3em; font-weight: 800; white-space: nowrap; transition: opacity 0.3s; letter-spacing: 0.5px;}
         .sidebar.collapsed .logo-title { opacity: 0; width: 0; overflow: hidden; }
+        .logo-img { width: 35px; height: 35px; object-fit: contain; flex-shrink: 0; border-radius: 8px;}
         
-        /* Cập nhật nút mũi tên màu cam */
-        .custom-toggle { width: 40px; height: 40px; background-color: var(--cam-nhat); border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; border: none; flex-shrink: 0;}
-        .custom-toggle i { font-size: 1.3em; color: var(--cam-chinh); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .sidebar.collapsed .custom-toggle i { transform: rotate(180deg); }
-        .custom-toggle:hover { background-color: #FFE0D0; transform: scale(1.05); }
+        /* ĐÃ CẬP NHẬT: Thay đổi giao diện nút Toggle sang dùng icon hình ảnh */
+        .custom-toggle { width: 40px; height: 40px; background-color: var(--cam-nhat); border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; border: none; flex-shrink: 0; overflow: hidden;}
+        .custom-toggle img { width: 24px; height: 24px; object-fit: contain; transition: 0.2s;}
+        .custom-toggle:hover { background-color: #FFE0D0; }
+        .custom-toggle:hover img { transform: scale(1.1); }
 
         .sidebar-menu { list-style: none; padding: 15px 10px; display: flex; flex-direction: column; gap: 6px; }
         .sidebar-menu li { padding: 14px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: var(--xam-text); font-weight: 600; transition: all 0.2s ease; white-space: nowrap; position: relative;}
@@ -299,20 +300,11 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-title">
-                <!-- Đã cập nhật: Phục hồi biểu tượng dưa lưới SVG nguyên bản -->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="35" height="35" style="flex-shrink: 0;">
-                    <circle cx="50" cy="55" r="40" fill="#cbe3a6"/>
-                    <path d="M48 15 Q45 5 35 8" fill="none" stroke="#6d4c41" stroke-width="4" stroke-linecap="round"/>
-                    <path d="M48 15 L52 15" stroke="#6d4c41" stroke-width="4" stroke-linecap="round"/>
-                    <path d="M30 20 Q10 55 30 90" fill="none" stroke="#aed581" stroke-width="2"/>
-                    <path d="M50 15 L50 95" fill="none" stroke="#aed581" stroke-width="2"/>
-                    <path d="M70 20 Q90 55 70 90" fill="none" stroke="#aed581" stroke-width="2"/>
-                </svg>
+                <img src="icon.png" alt="Melon Coffee" class="logo-img">
                 <span>MELON COFFEE</span>
             </div>
-            <!-- Đã cập nhật: Nút mũi tên màu cam, tự động xoay khi đóng/mở sidebar -->
             <button class="custom-toggle" onclick="window.toggleSidebar()">
-                <i class="fa-solid fa-chevron-left"></i>
+                <img src="icon.png" alt="Menu" style="width: 24px; height: 24px; object-fit: contain;">
             </button>
         </div>
         <ul class="sidebar-menu">
