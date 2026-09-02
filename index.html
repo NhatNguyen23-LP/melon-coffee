@@ -50,7 +50,9 @@
         .sidebar-menu li.active { background-color: var(--cam-chinh); color: var(--trang); }
         .sidebar-menu li.active i { color: var(--trang); }
         .sidebar.collapsed .sidebar-menu span { display: none; }
-        .badge { position: absolute; right: 10px; background: red; color: white; border-radius: 50%; padding: 2px 8px; font-size: 0.8em; font-weight: bold; display: none; }
+        
+        /* Sửa badge chuẩn tròn đều */
+        .badge { position: absolute; top: 8px; right: 8px; background: red; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7em; font-weight: bold; display: none; align-items: center; justify-content: center; }
 
         /* --- MAIN CONTENT --- */
         .main-content { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; position: relative; height: 100%; width: 100%; }
@@ -137,9 +139,11 @@
         .cal-date { font-size: 0.75em; color: #888; font-weight: bold; }
         .cal-rev { color: var(--cam-chinh); font-weight: bold; font-size: 0.8em; text-align: right;}
 
-        /* --- MODAL CHUNG --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 10px; }
-        .modal-content { background: #fff; width: 500px; max-width: 100%; max-height: 90vh; border-radius: 12px; display: flex; overflow-y: auto; position: relative; flex-direction: column; padding: 20px;}
+        /* --- MODAL CHUNG (LUÔN NỔI GIỮA MÀN HÌNH NHƯ TRÊN PC) --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 15px; }
+        .modal-content { background: #fff; width: 500px; max-width: 100%; max-height: 85vh; border-radius: 12px; display: flex; overflow-y: auto; position: relative; flex-direction: column; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: scaleUp 0.25s ease;}
+        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
         .close-btn { position: absolute; top: 12px; right: 12px; font-size: 1.3em; cursor: pointer; color: #888; background: #eee; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; z-index: 10;}
         
         #preview-bill-modal .modal-content { width: 400px; background: #f4f4f4;}
@@ -161,13 +165,13 @@
         .kitchen-item { font-size: 1em; padding: 6px 0; border-bottom: 1px dashed #eee; color: #333;}
         .btn-done { background: #28a745; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; font-weight: bold; margin-top: 10px; cursor: pointer;}
 
-        #recipe-modal .modal-content { flex-direction: row; width: 550px; padding: 0;}
+        #recipe-modal .modal-content { flex-direction: row; width: 600px; padding: 0;}
         .modal-img { flex: 4; background: var(--cam-nhat); display: flex; align-items: center; justify-content: center; padding: 15px; }
         .modal-img img { width: 100%; max-width: 150px; border-radius: 8px; }
         .modal-info { flex: 6; padding: 20px; overflow-y: auto; }
         .recipe-steps { margin-top: 10px; list-style-type: decimal; padding-left: 18px; color: #444; line-height: 1.5; font-size: 0.9em;}
 
-        #toast-container { position: fixed; bottom: 85px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        #toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: var(--cam-chinh); color: white; padding: 12px 18px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 102, 0, 0.4);}
 
         #print-section { display: none; }
@@ -178,63 +182,60 @@
         @media (max-width: 850px) {
             body { flex-direction: column; height: 100vh; overflow: hidden; }
             
-            /* Đưa Sidebar thành Menu nằm dưới đáy, tự né thanh Home Indicator của iPhone */
+            /* Đẩy menu lên cao hơn một chút và né thanh Home Indicator của iPhone */
             .sidebar { 
                 position: fixed; bottom: 0; left: 0; width: 100% !important; 
-                height: calc(60px + env(safe-area-inset-bottom)); 
+                height: calc(52px + env(safe-area-inset-bottom)); 
                 padding-bottom: env(safe-area-inset-bottom);
                 flex-direction: row; border-top: 1px solid var(--vien); border-right: none; 
                 z-index: 999; background: var(--trang); box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             }
             .sidebar-header { display: none !important; } 
             .sidebar-menu { 
-                flex-direction: row; padding: 0 2px; width: 100%; justify-content: space-between; align-items: center; height: 60px;
+                flex-direction: row; padding: 0 2px; width: 100%; justify-content: space-around; align-items: center; height: 52px;
             }
             .sidebar-menu li { 
-                flex: 1; flex-direction: column; gap: 2px; padding: 4px 1px; 
+                flex: 1; flex-direction: column; gap: 1px; padding: 2px 0; 
                 background: transparent !important; color: var(--xam-text); align-items: center; justify-content: center;
                 text-align: center;
             }
-            /* Cố định kích thước icon và chữ cho vừa khít 6 mục */
-            .sidebar-menu li i { font-size: 1.05em; min-width: auto; color: var(--xam-text); }
+            .sidebar-menu li i { font-size: 1em; min-width: auto; color: var(--xam-text); }
             .sidebar-menu li.active { color: var(--cam-chinh) !important; background: transparent !important; }
             .sidebar-menu li.active i { color: var(--cam-chinh) !important; }
-            .sidebar-menu li span { display: block !important; font-size: 0.55em; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; color: inherit; }
-            .badge { top: 0px; right: 2px; padding: 1px 4px; font-size: 0.55em; }
+            .sidebar-menu li span { display: block !important; font-size: 0.52em; font-weight: 600; white-space: nowrap; color: inherit; }
+            
+            /* Sửa badge di động chuẩn tròn, không bị kéo dãn */
+            .badge { top: 2px; right: calc(50% - 18px); width: 16px; height: 16px; font-size: 0.55em; padding: 0; display: flex !important; align-items: center; justify-content: center; border-radius: 50%; }
 
-            /* Khung nội dung chính tự cách đáy để không bị thanh menu che mất nội dung cuối */
+            /* Khung nội dung cách đáy vừa đủ */
             .main-content { 
-                padding: 12px; padding-bottom: calc(75px + env(safe-area-inset-bottom)); height: 100vh; width: 100vw; overflow-y: auto; 
+                padding: 12px; padding-bottom: calc(65px + env(safe-area-inset-bottom)); height: 100vh; width: 100vw; overflow-y: auto; 
             }
             
-            /* POS Layout: Xếp dọc sản phẩm trên, giỏ hàng bên dưới */
             .pos-layout { flex-direction: column; gap: 12px; height: auto; overflow: visible; }
             .pos-products { max-height: none; overflow: visible; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
             .pos-cart { position: static; width: 100%; height: auto; min-width: 0; box-shadow: none; margin-bottom: 20px;}
             .cart-items { max-height: 200px; }
 
-            /* Form & Quản lý */
             .split-col { flex-direction: column; gap: 0; }
             .manage-item { flex-direction: column; align-items: flex-start; gap: 8px; }
             .manage-info { width: 100%; }
             .manage-item .btn-action { width: 100%; justify-content: center; margin-top: 5px; }
 
-            /* Thống kê & Báo cáo */
             .stats-summary { grid-template-columns: 1fr 1fr; gap: 10px; }
             .stat-box .val { font-size: 1.2em; }
             .month-picker-container { width: 100%; justify-content: space-between; }
             
-            /* Modal hiển thị dạng Popup trượt từ dưới lên trên màn hình điện thoại */
-            .modal { align-items: flex-end; padding: 0; }
-            .modal-content { width: 100% !important; max-height: 85vh; border-radius: 20px 20px 0 0; padding: 20px; }
-            #recipe-modal .modal-content { flex-direction: column; }
+            /* Modal hiển thị giữa màn hình trên di động */
+            .modal { align-items: center; padding: 15px; }
+            .modal-content { width: 100% !important; max-height: 80vh; border-radius: 12px; padding: 20px !important; }
+            #recipe-modal .modal-content { flex-direction: column; width: 100% !important; }
             .modal-img { padding: 10px; flex: none; }
-            .modal-img img { max-width: 100px; }
+            .modal-img img { max-width: 110px; }
             
-            #toast-container { bottom: calc(75px + env(safe-area-inset-bottom)); left: 10px; right: 10px; }
+            #toast-container { bottom: calc(65px + env(safe-area-inset-bottom)); left: 10px; right: 10px; }
         }
 
-        /* IN ẤN */
         @media print {
             @page { margin: 0; }
             body { background: white; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
@@ -492,9 +493,6 @@
 
     <div id="toast-container"></div>
 
-    <!-- ============================================== -->
-    <!-- MÃ FIREBASE CHÍNH THỨC                          -->
-    <!-- ============================================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -555,8 +553,6 @@
         initMonthYearPickers();
         
         window.toggleSidebar = function() { document.getElementById('sidebar').classList.toggle('collapsed'); }
-        
-        // Sửa lại hàm switchTab để giữ nguyên màu sắc & icon của các mục được chọn
         window.switchTab = function(tabId, el) {
             document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
@@ -659,7 +655,8 @@
             const count = pendingOrders.length;
             document.getElementById('sidebar-badge').innerText = count;
             document.getElementById('top-badge').innerText = count;
-            document.getElementById('sidebar-badge').style.display = count > 0 ? 'block' : 'none';
+            const badgeEl = document.getElementById('sidebar-badge');
+            badgeEl.style.display = count > 0 ? 'flex' : 'none';
         }
         window.showKitchenToast = function(billId) {
             const container = document.getElementById('toast-container');
@@ -825,7 +822,7 @@
             if(tempEditBill.items.length === 0) container.innerHTML = '<p style="text-align:center; color:red;">Bill đang trống! Hãy thêm món hoặc xóa luôn bill này.</p>';
             tempEditBill.items.forEach((item, index) => {
                 total += item.price * item.qty;
-                container.innerHTML += `<div class="edit-row"><div><b style="color:#333; font-size:1.1em;">${item.name}</b> <span style="background:var(--cam-nhat); color:var(--cam-chinh); padding:2px 5px; border-radius:3px; font-size:0.8em;">Size ${item.size}</span><div style="color:#666; font-size:0.9em; margin-top:5px;">Đơn giá: ${formatMoney(item.price)}</div></div><div class="qty-controls"><button class="qty-btn" onclick="window.updateTempBillQty(${index}, -1)">-</button><span style="font-weight:bold; font-size:1.2em; width:20px; text-align:center;">${item.qty}</span><button class="qty-btn" onclick="window.updateTempBillQty(${index}, 1)">+</button><button class="btn-action btn-delete" style="margin-left:15px; padding: 6px 10px;" onclick="window.removeTempBillItem(${index})"><i class="fa-solid fa-xmark"></i></button></div></div>`;
+                container.innerHTML += `<div class="edit-row"><div><b style="color:#333; font-size:1.1em;">${item.name}</b> <span style="background:var(--cam-chinh); color:white; padding:2px 5px; border-radius:3px; font-size:0.8em;">Size ${item.size}</span><div style="color:#666; font-size:0.9em; margin-top:5px;">Đơn giá: ${formatMoney(item.price)}</div></div><div class="qty-controls"><button class="qty-btn" onclick="window.updateTempBillQty(${index}, -1)">-</button><span style="font-weight:bold; font-size:1.2em; width:20px; text-align:center;">${item.qty}</span><button class="qty-btn" onclick="window.updateTempBillQty(${index}, 1)">+</button><button class="btn-action btn-delete" style="margin-left:15px; padding: 6px 10px;" onclick="window.removeTempBillItem(${index})"><i class="fa-solid fa-xmark"></i></button></div></div>`;
             });
             tempEditBill.total = total;
             document.getElementById('edit-modal-total').innerText = formatMoney(total);
