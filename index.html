@@ -22,218 +22,248 @@
             --cam-nhat: #FFF0E6;
             --trang: #FFFFFF;
             --xam-nhat: #F8F9FA;
-            --xam-text: #888888;
-            --vien: #FFE0D0;
+            --xam-text: #777777;
+            --vien: #E5E7EB;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--cam-nhat); display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+        /* Nâng cấp font chữ mượt mà và chuyên nghiệp hơn */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--xam-nhat); display: flex; height: 100vh; width: 100vw; overflow: hidden; }
 
         /* --- SIDEBAR MẶC ĐỊNH (DESKTOP) --- */
-        .sidebar { width: 260px; background-color: var(--trang); border-right: 2px solid var(--vien); display: flex; flex-direction: column; transition: width 0.3s; z-index: 100; flex-shrink: 0; }
+        .sidebar { width: 260px; background-color: var(--trang); border-right: 1px solid var(--vien); display: flex; flex-direction: column; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; flex-shrink: 0; box-shadow: 2px 0 15px rgba(0,0,0,0.03); }
         .sidebar.collapsed { width: 80px; }
         .sidebar-header { padding: 20px 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--vien); height: 80px;}
         
-        .logo-title { display: flex; align-items: center; gap: 8px; color: var(--cam-chinh); font-size: 1.3em; font-weight: 900; white-space: nowrap; transition: opacity 0.3s; }
+        .logo-title { display: flex; align-items: center; gap: 10px; color: var(--cam-chinh); font-size: 1.3em; font-weight: 800; white-space: nowrap; transition: opacity 0.3s; letter-spacing: 0.5px;}
         .sidebar.collapsed .logo-title { opacity: 0; width: 0; overflow: hidden; }
         
-        .custom-toggle { width: 40px; height: 40px; background-color: var(--cam-nhat); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; cursor: pointer; transition: 0.2s; border: none; flex-shrink: 0;}
+        .custom-toggle { width: 40px; height: 40px; background-color: var(--cam-nhat); border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; cursor: pointer; transition: 0.2s; border: none; flex-shrink: 0;}
         .custom-toggle span { display: block; height: 3px; background-color: var(--cam-chinh); border-radius: 2px; }
-        .custom-toggle span:nth-child(1) { width: 18px; }
-        .custom-toggle span:nth-child(2) { width: 24px; }
-        .custom-toggle span:nth-child(3) { width: 24px; }
+        .custom-toggle span:nth-child(1) { width: 20px; }
+        .custom-toggle span:nth-child(2) { width: 20px; }
+        .custom-toggle span:nth-child(3) { width: 20px; }
 
-        .sidebar-menu { list-style: none; padding: 15px 10px; display: flex; flex-direction: column; gap: 8px; }
-        .sidebar-menu li { padding: 12px 15px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: var(--xam-text); font-weight: 600; transition: 0.3s; white-space: nowrap; position: relative;}
-        .sidebar-menu li i { font-size: 1.2em; color: var(--cam-chinh); min-width: 25px; text-align: center; }
+        .sidebar-menu { list-style: none; padding: 15px 10px; display: flex; flex-direction: column; gap: 6px; }
+        .sidebar-menu li { padding: 14px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: var(--xam-text); font-weight: 600; transition: all 0.2s ease; white-space: nowrap; position: relative;}
+        .sidebar-menu li i { font-size: 1.25em; color: var(--xam-text); min-width: 25px; text-align: center; transition: 0.2s; }
         .sidebar-menu li:hover { background-color: var(--cam-nhat); color: var(--cam-chinh); }
-        .sidebar-menu li.active { background-color: var(--cam-chinh); color: var(--trang); }
+        .sidebar-menu li:hover i { color: var(--cam-chinh); }
+        .sidebar-menu li.active { background-color: var(--cam-chinh); color: var(--trang); box-shadow: 0 4px 12px rgba(255, 102, 0, 0.25); }
         .sidebar-menu li.active i { color: var(--trang); }
         .sidebar.collapsed .sidebar-menu span { display: none; }
         
-        .badge { position: absolute; top: 8px; right: 8px; background: red; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7em; font-weight: bold; display: none; align-items: center; justify-content: center; }
+        .badge { position: absolute; top: 8px; right: 8px; background: #EF4444; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7em; font-weight: bold; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4); }
 
         /* --- MAIN CONTENT --- */
-        .main-content { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; position: relative; height: 100%; width: 100%; }
-        .tab-pane { display: none; animation: fadeIn 0.3s; flex: 1; flex-direction: column; height: 100%; }
+        .main-content { flex: 1; padding: 25px 30px; overflow-y: auto; display: flex; flex-direction: column; position: relative; height: 100%; width: 100%; -webkit-overflow-scrolling: touch; }
+        .tab-pane { display: none; animation: fadeIn 0.3s ease; flex: 1; flex-direction: column; height: 100%; }
         .tab-pane.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
-        .header-top, .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; width: 100%; flex-shrink: 0; }
-        h1 { color: var(--cam-chinh); font-size: 1.5em; display: flex; align-items: center; gap: 10px; margin: 0;}
+        .header-top, .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; width: 100%; flex-shrink: 0; }
+        h1 { color: #111827; font-size: 1.6em; display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 800; letter-spacing: -0.5px;}
+        h1 i { color: var(--cam-chinh); }
 
-        .btn-kitchen-top { background: white; border: 2px solid var(--cam-chinh); color: var(--cam-chinh); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 0.9em;}
-        .category-title { grid-column: 1 / -1; color: var(--cam-chinh); border-bottom: 2px dashed var(--cam-chinh); padding-bottom: 5px; margin: 10px 0 5px 0; font-size: 1.1em; font-weight: bold; text-transform: uppercase;}
+        .btn-kitchen-top { background: white; border: 1px solid var(--vien); color: var(--cam-chinh); padding: 10px 15px; border-radius: 10px; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; font-size: 0.95em; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s;}
+        .btn-kitchen-top:hover { border-color: var(--cam-chinh); box-shadow: 0 4px 12px rgba(255,102,0,0.1); }
+        .category-title { grid-column: 1 / -1; color: #4B5563; border-bottom: 2px solid var(--vien); padding-bottom: 8px; margin: 15px 0 10px 0; font-size: 1.05em; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;}
 
         /* --- BỐ CỤC POS --- */
-        .pos-layout { display: flex; gap: 15px; flex: 1; overflow: hidden; height: calc(100% - 50px); }
-        .pos-products { flex: 7; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; align-content: flex-start; padding-bottom: 20px; }
-        .pos-cart { flex: 3; background: var(--trang); border-radius: 12px; padding: 15px; border: 2px solid var(--vien); display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(255, 102, 0, 0.05); min-width: 280px; height: 100%; }
+        .pos-layout { display: flex; gap: 20px; flex: 1; overflow: hidden; height: calc(100% - 50px); }
+        .pos-products { flex: 7; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 15px; align-content: flex-start; padding-bottom: 30px; -webkit-overflow-scrolling: touch;}
+        .pos-cart { flex: 3; background: var(--trang); border-radius: 16px; padding: 20px; border: 1px solid var(--vien); display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03); min-width: 320px; height: 100%; }
         
-        .product-card { background: var(--trang); border: 2px solid var(--vien); border-radius: 12px; padding: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;}
-        .product-card img { width: 75px; height: 75px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; }
-        .product-card h3 { font-size: 0.95em; color: #333; margin-bottom: 5px; }
+        .product-card { background: var(--trang); border: 1px solid var(--vien); border-radius: 16px; padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,102,0,0.1); border-color: var(--cam-chinh); }
+        .product-card img { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid var(--cam-nhat); }
+        .product-card h3 { font-size: 1em; color: #1F2937; margin-bottom: 8px; font-weight: 700; line-height: 1.3;}
         
-        /* Hiệu ứng món tạm hết (màu xám, mờ) */
-        .product-card.sold-out { opacity: 0.5; filter: grayscale(1); background: #eee; }
-        .product-card.sold-out .btn-size { pointer-events: none; background: #ddd; color: #888; border-color: #ccc; }
-
-        .size-btns { display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 5px;}
-        .btn-size { flex: 1; padding: 6px 2px; border: 1px solid var(--cam-chinh); background: white; color: var(--cam-chinh); border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75em; }
-        .btn-size:hover { background: var(--cam-nhat); }
+        .product-card.sold-out { opacity: 0.6; filter: grayscale(1); background: #F3F4F6; pointer-events: none; }
         
-        .cashier-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; outline: none; font-size: 0.9em; }
-        .cart-items { flex: 1; overflow-y: auto; border-top: 1px dashed #ccc; border-bottom: 1px dashed #ccc; padding: 8px 0; margin-bottom: 10px; }
-        .cart-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85em; }
-        .cart-total { font-size: 1.2em; font-weight: bold; text-align: right; margin-bottom: 10px; color: #333; }
-        .btn-thanh-toan { background: var(--cam-chinh); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; width: 100%; display: flex; justify-content: center; gap: 8px; flex-shrink: 0;}
-        .btn-thanh-toan:hover { background: var(--cam-dam); }
+        .size-btns { display: flex; gap: 8px; justify-content: center; width: 100%; margin-top: 5px;}
+        .btn-size { flex: 1; padding: 8px 4px; border: 1px solid var(--cam-nhat); background: var(--cam-nhat); color: var(--cam-dam); border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8em; transition: 0.2s;}
+        .btn-size:hover { background: var(--cam-chinh); color: white; border-color: var(--cam-chinh); }
+        
+        .cashier-input { width: 100%; padding: 12px 15px; border: 1px solid var(--vien); border-radius: 10px; margin-bottom: 15px; outline: none; font-size: 0.95em; background: #F9FAFB; transition: 0.2s;}
+        .cashier-input:focus { border-color: var(--cam-chinh); background: white; box-shadow: 0 0 0 3px rgba(255,102,0,0.1); }
+        .cart-items { flex: 1; overflow-y: auto; border-top: 1px dashed var(--vien); border-bottom: 1px dashed var(--vien); padding: 10px 0; margin-bottom: 15px; }
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9em; align-items: center; }
+        .cart-total { font-size: 1.3em; font-weight: 800; text-align: right; margin-bottom: 15px; color: #111827; }
+        .btn-thanh-toan { background: var(--cam-chinh); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.05em; font-weight: 800; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; flex-shrink: 0; box-shadow: 0 4px 15px rgba(255,102,0,0.3); transition: 0.2s;}
+        .btn-thanh-toan:hover { background: var(--cam-dam); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,102,0,0.4); }
 
         /* --- QUẢN LÝ MÓN --- */
-        .manage-container { display: flex; flex-direction: column; gap: 15px; max-width: 800px; margin: 0 auto; width: 100%; padding-bottom: 30px;}
-        .form-add, .manage-list { background: var(--trang); padding: 20px; border-radius: 12px; border: 2px solid var(--vien); }
+        .manage-container { display: flex; flex-direction: column; gap: 20px; max-width: 900px; margin: 0 auto; width: 100%; padding-bottom: 40px;}
+        .form-add, .manage-list { background: var(--trang); padding: 25px; border-radius: 16px; border: 1px solid var(--vien); box-shadow: 0 4px 20px rgba(0,0,0,0.02);}
         .split-col { display: flex; gap: 15px; }
-        .form-group { margin-bottom: 12px; flex: 1;}
-        .form-group label { display: block; font-weight: bold; margin-bottom: 6px; color: #333; font-size: 0.9em; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none; font-size: 0.95em;}
-        .form-group textarea { height: 70px; resize: vertical; }
+        .form-group { margin-bottom: 15px; flex: 1;}
+        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; color: #374151; font-size: 0.9em; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--vien); border-radius: 10px; outline: none; font-size: 0.95em; background: #F9FAFB; transition: 0.2s;}
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--cam-chinh); background: white; }
+        .form-group textarea { height: 80px; resize: vertical; }
         
-        .image-upload-box { border: 2px dashed #FF6600; padding: 15px; border-radius: 8px; text-align: center; background: #FFF8F0; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;}
+        .image-upload-box { border: 2px dashed #D1D5DB; padding: 20px; border-radius: 12px; text-align: center; background: #F9FAFB; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;}
+        .image-upload-box:hover { border-color: var(--cam-chinh); background: var(--cam-nhat); }
         .image-upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .img-preview-wrapper { width: 100px; height: 100px; border-radius: 8px; overflow: hidden; display: none; border: 2px solid var(--cam-chinh); }
+        .img-preview-wrapper { width: 120px; height: 120px; border-radius: 10px; overflow: hidden; display: none; border: 2px solid var(--cam-chinh); box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
         .img-preview-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
-        .manage-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; gap: 10px; }
-        .manage-info { display: flex; align-items: center; gap: 12px; flex: 1; }
-        .manage-info img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover;}
+        .manage-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--vien); gap: 15px; }
+        .manage-info { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .manage-info img { width: 55px; height: 55px; border-radius: 10px; object-fit: cover; border: 1px solid var(--vien);}
         
-        .btn-action { padding: 6px 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; font-size: 0.85em; }
-        .btn-edit { background: #17a2b8; color: white; }
-        .btn-delete { background: #dc3545; color: white; }
-        .btn-excel { background: #28a745; color: white; font-size: 0.95em; padding: 10px 15px; border-radius: 8px; border:none; cursor:pointer;}
+        .btn-action { padding: 8px 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; font-size: 0.85em; transition: 0.2s;}
+        .btn-edit { background: #E0F2FE; color: #0369A1; }
+        .btn-edit:hover { background: #BAE6FD; }
+        .btn-delete { background: #FEE2E2; color: #B91C1C; }
+        .btn-delete:hover { background: #FECACA; }
+        .btn-excel { background: #10B981; color: white; font-size: 0.95em; padding: 12px 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);}
+        .btn-excel:hover { background: #059669; transform: translateY(-2px);}
+
+        /* Khung Checkbox chuyên nghiệp */
+        .toggle-checkbox { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.85em; font-weight: 600; color: #4B5563; padding: 6px 10px; background: #F3F4F6; border-radius: 8px; transition: 0.2s;}
+        .toggle-checkbox:hover { background: #E5E7EB; }
+        .toggle-checkbox input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--cam-chinh); }
 
         /* --- LỊCH SỬ & THỐNG KÊ --- */
-        .table-container { background: white; border-radius: 12px; border: 2px solid var(--vien); flex: 1; overflow: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 650px; }
-        th, td { padding: 10px 12px; border-bottom: 1px solid #eee; text-align: left; vertical-align: middle; font-size: 0.9em;}
-        th { background: var(--cam-nhat); color: var(--cam-chinh); position: sticky; top: 0; z-index: 10;}
-        .history-row { cursor: pointer; }
+        .table-container { background: white; border-radius: 16px; border: 1px solid var(--vien); flex: 1; overflow: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.02);}
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        th, td { padding: 15px 15px; text-align: left; vertical-align: middle; font-size: 0.95em; border-bottom: 1px solid var(--vien);}
+        th { background: #F9FAFB; color: #374151; position: sticky; top: 0; z-index: 10; font-weight: 700; text-transform: uppercase; font-size: 0.85em; letter-spacing: 0.5px;}
+        tr:nth-child(even) { background-color: #FAFAFA; }
+        .history-row { cursor: pointer; transition: 0.2s;}
         .history-row:hover { background-color: var(--cam-nhat); }
-        .bill-link { color: var(--cam-chinh); font-weight: bold; }
+        .bill-link { color: var(--cam-chinh); font-weight: 800; background: var(--cam-nhat); padding: 4px 8px; border-radius: 6px;}
 
-        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; padding-bottom: 20px;}
-        .recipe-card { background: var(--trang); padding: 12px; text-align: center; border-radius: 12px; border: 2px solid var(--vien); cursor: pointer; }
-        .recipe-card img { width: 70px; height: 70px; border-radius: 10%; object-fit: cover; margin-bottom: 8px;}
+        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding-bottom: 30px;}
+        .recipe-card { background: var(--trang); padding: 15px; text-align: center; border-radius: 16px; border: 1px solid var(--vien); cursor: pointer; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
+        .recipe-card:hover { border-color: var(--cam-chinh); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,102,0,0.1);}
+        .recipe-card img { width: 80px; height: 80px; border-radius: 12px; object-fit: cover; margin-bottom: 10px;}
 
-        .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-box { background: white; padding: 20px 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center;}
-        .stat-box::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--cam-chinh); }
-        .stat-box:nth-child(4)::before { background: #28a745; } 
-        .stat-box h3 { color: #888; font-size: 0.85em; margin-bottom: 6px; text-transform: uppercase;}
-        .stat-box .val { color: #333; font-size: 1.5em; font-weight: 800; }
-        .stat-box i.bg-icon { position: absolute; right: 10px; bottom: -10px; font-size: 4em; color: rgba(255, 102, 0, 0.06); transform: rotate(-15deg); }
+        .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: white; padding: 25px 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; border: 1px solid var(--vien);}
+        .stat-box::before { content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: var(--cam-chinh); }
+        .stat-box:nth-child(4)::before { background: #10B981; } 
+        .stat-box h3 { color: #6B7280; font-size: 0.85em; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;}
+        .stat-box .val { color: #111827; font-size: 1.8em; font-weight: 800; }
+        .stat-box i.bg-icon { position: absolute; right: 10px; bottom: -15px; font-size: 5em; color: rgba(255, 102, 0, 0.04); transform: rotate(-15deg); }
 
-        .month-picker-container { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; background: white; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--vien); width: fit-content;}
-        .month-picker-container select { padding: 6px; border: 1px solid var(--vien); border-radius: 5px; font-weight: bold; color: var(--cam-chinh); background: white;}
+        .month-picker-container { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; background: white; padding: 12px 20px; border-radius: 12px; border: 1px solid var(--vien); width: fit-content; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
+        .month-picker-container select { padding: 8px 12px; border: 1px solid var(--vien); border-radius: 8px; font-weight: 700; color: var(--cam-chinh); background: #F9FAFB; outline: none; cursor: pointer;}
         
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; background: white; padding: 15px; border-radius: 12px; border: 2px solid var(--vien); }
-        .cal-cell { border: 1px solid #eee; border-radius: 6px; padding: 6px; min-height: 70px; display: flex; flex-direction: column; justify-content: space-between; background: #fafafa; }
-        .cal-cell.has-data { background: var(--cam-nhat); border-color: var(--vien); }
-        .cal-cell.today { border: 2px solid var(--cam-chinh); background: #FFF8F0; } 
-        .cal-date { font-size: 0.75em; color: #888; font-weight: bold; }
-        .cal-rev { color: var(--cam-chinh); font-weight: bold; font-size: 0.8em; text-align: right;}
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--vien); box-shadow: 0 4px 20px rgba(0,0,0,0.02);}
+        .cal-cell { border: 1px solid var(--vien); border-radius: 10px; padding: 10px; min-height: 80px; display: flex; flex-direction: column; justify-content: space-between; background: #FAFAFA; transition: 0.2s; }
+        .cal-cell:hover { background: white; border-color: #D1D5DB; }
+        .cal-cell.has-data { background: var(--cam-nhat); border-color: #FDBA74; }
+        .cal-cell.today { border: 2px solid var(--cam-chinh); background: #FFF7ED; } 
+        .cal-date { font-size: 0.85em; color: #6B7280; font-weight: 700; }
+        .cal-rev { color: var(--cam-chinh); font-weight: 800; font-size: 0.9em; text-align: right;}
 
-        /* --- MODAL CHUNG (LUÔN NỔI GIỮA MÀN HÌNH) --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 15px; }
-        .modal-content { background: #fff; width: 500px; max-width: 100%; max-height: 85vh; border-radius: 12px; display: flex; overflow-y: auto; position: relative; flex-direction: column; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: scaleUp 0.25s ease;}
-        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        /* --- MODAL CHUNG CỰC KỲ CHUYÊN NGHIỆP NỔI CHÍNH GIỮA --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.7); z-index: 2000; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(4px); }
+        .modal-content { background: #fff; width: 550px; max-width: 100%; max-height: 90vh; border-radius: 20px; display: flex; overflow-y: auto; position: relative; flex-direction: column; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
+        @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
-        .close-btn { position: absolute; top: 12px; right: 12px; font-size: 1.3em; cursor: pointer; color: #888; background: #eee; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; z-index: 10;}
+        .close-btn { position: absolute; top: 15px; right: 15px; font-size: 1.2em; cursor: pointer; color: #6B7280; background: #F3F4F6; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; z-index: 10; transition: 0.2s;}
+        .close-btn:hover { background: #E5E7EB; color: #111827; }
         
-        #preview-bill-modal .modal-content { width: 400px; background: #f4f4f4;}
-        .receipt-paper { background: white; padding: 15px; border-radius: 5px; margin-bottom: 15px; font-family: monospace; font-size: 13px; color: #000; }
-        .preview-actions { display: flex; gap: 10px; }
-        .btn-preview-in, .btn-preview-sua { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1em; color: white;}
-        .btn-preview-in { background: #333; }
+        #preview-bill-modal .modal-content { width: 420px; background: #F9FAFB; padding: 25px;}
+        .receipt-paper { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; font-family: "Courier New", Courier, monospace; font-size: 14px; color: #000; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #E5E7EB;}
+        .preview-actions { display: flex; gap: 12px; }
+        .btn-preview-in, .btn-preview-sua { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 1.05em; color: white; transition: 0.2s;}
+        .btn-preview-in { background: #1F2937; }
+        .btn-preview-in:hover { background: #111827; transform: translateY(-2px);}
         .btn-preview-sua { background: var(--cam-chinh); }
+        .btn-preview-sua:hover { background: var(--cam-dam); transform: translateY(-2px);}
 
-        #edit-bill-modal .modal-content { width: 500px; }
-        .edit-row { display: flex; align-items: center; justify-content: space-between; background: #f9f9f9; padding: 8px 12px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #eee;}
-        .qty-controls { display: flex; align-items: center; gap: 8px; }
-        .qty-btn { width: 26px; height: 26px; border: none; background: var(--cam-chinh); color: white; border-radius: 50%; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;}
-        .add-new-item-box { border: 2px dashed #ccc; padding: 10px; border-radius: 8px; margin-bottom: 12px; display: flex; gap: 8px; align-items: center;}
-        .add-new-item-box select { padding: 6px; border: 1px solid #ccc; border-radius: 4px; flex: 1;}
+        #edit-bill-modal .modal-content { width: 550px; }
+        .edit-row { display: flex; align-items: center; justify-content: space-between; background: white; padding: 12px 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid var(--vien); box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .qty-controls { display: flex; align-items: center; gap: 10px; }
+        .qty-btn { width: 30px; height: 30px; border: none; background: var(--cam-chinh); color: white; border-radius: 8px; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 1.1em;}
+        .add-new-item-box { border: 2px dashed #D1D5DB; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center; background: #F9FAFB;}
+        .add-new-item-box select { padding: 10px; border: 1px solid #D1D5DB; border-radius: 8px; flex: 1; outline: none; font-weight: 600;}
 
-        #kitchen-modal .modal-content { width: 450px; }
-        .kitchen-order { border: 2px solid var(--vien); border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #FFF8F0; }
-        .kitchen-item { font-size: 1em; padding: 6px 0; border-bottom: 1px dashed #eee; color: #333;}
-        .btn-done { background: #28a745; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; font-weight: bold; margin-top: 10px; cursor: pointer;}
+        #kitchen-modal .modal-content { width: 500px; }
+        .kitchen-order { border: 2px solid var(--cam-nhat); border-radius: 12px; padding: 15px; margin-bottom: 15px; background: #FFF7ED; box-shadow: 0 4px 6px rgba(255,102,0,0.05);}
+        .kitchen-item { font-size: 1.05em; padding: 8px 0; border-bottom: 1px dashed #E5E7EB; color: #1F2937; font-weight: 500;}
+        .btn-done { background: #10B981; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: 800; margin-top: 12px; cursor: pointer; font-size: 1.05em; transition: 0.2s;}
+        .btn-done:hover { background: #059669; transform: translateY(-2px);}
 
-        #recipe-modal .modal-content { flex-direction: row; width: 600px; padding: 0;}
-        .modal-img { flex: 4; background: var(--cam-nhat); display: flex; align-items: center; justify-content: center; padding: 15px; }
-        .modal-img img { width: 100%; max-width: 150px; border-radius: 8px; }
-        .modal-info { flex: 6; padding: 20px; overflow-y: auto; }
-        .recipe-steps { margin-top: 10px; list-style-type: decimal; padding-left: 18px; color: #444; line-height: 1.5; font-size: 0.9em;}
+        #recipe-modal .modal-content { flex-direction: row; width: 650px; padding: 0; overflow: hidden;}
+        .modal-img { flex: 4; background: var(--cam-nhat); display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .modal-img img { width: 100%; max-width: 180px; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); border: 4px solid white;}
+        .modal-info { flex: 6; padding: 30px; overflow-y: auto; }
+        .recipe-steps { margin-top: 15px; list-style-type: decimal; padding-left: 20px; color: #4B5563; line-height: 1.6; font-size: 0.95em;}
 
-        #toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: var(--cam-chinh); color: white; padding: 12px 18px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 102, 0, 0.4);}
+        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 15px; }
+        .toast { background: var(--cam-chinh); color: white; padding: 15px 25px; border-radius: 12px; display: flex; align-items: center; gap: 15px; cursor: pointer; box-shadow: 0 10px 25px rgba(255, 102, 0, 0.4); animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0;} to { transform: translateX(0); opacity: 1;} }
 
         #print-section { display: none; }
 
         /* ========================================================== */
-        /* MOBILE & TABLET OPTIMIZATION (ĐIỆN THOẠI & IPAD)            */
+        /* MOBILE & TABLET OPTIMIZATION (ĐIỆN THOẠI & IPAD)           */
         /* ========================================================== */
         @media (max-width: 850px) {
             body { flex-direction: column; height: 100vh; overflow: hidden; }
             
+            /* Tăng chiều cao thanh menu dưới để không bị sát lề đáy iPhone */
             .sidebar { 
                 position: fixed; bottom: 0; left: 0; width: 100% !important; 
-                height: calc(58px + env(safe-area-inset-bottom)); 
-                padding-bottom: calc(4px + env(safe-area-inset-bottom));
+                height: calc(75px + env(safe-area-inset-bottom)); /* Tăng cao lên hẳn */
+                padding-bottom: calc(15px + env(safe-area-inset-bottom)); /* Né thanh bar đen iOS */
                 flex-direction: row; border-top: 1px solid var(--vien); border-right: none; 
-                z-index: 999; background: var(--trang); box-shadow: 0 -3px 12px rgba(0,0,0,0.06);
+                z-index: 999; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); box-shadow: 0 -5px 20px rgba(0,0,0,0.06);
             }
             .sidebar-header { display: none !important; } 
             .sidebar-menu { 
-                flex-direction: row; padding: 0 2px; width: 100%; justify-content: space-around; align-items: center; height: 54px;
+                flex-direction: row; padding: 0 5px; width: 100%; justify-content: space-around; align-items: center; height: 60px;
             }
             .sidebar-menu li { 
-                flex: 1; flex-direction: column; gap: 2px; padding: 4px 0; 
-                background: transparent !important; color: var(--xam-text); align-items: center; justify-content: center;
-                text-align: center;
+                flex: 1; flex-direction: column; gap: 4px; padding: 6px 0; 
+                background: transparent !important; color: #9CA3AF; align-items: center; justify-content: center;
+                text-align: center; border-radius: 0; box-shadow: none !important;
             }
-            .sidebar-menu li i { font-size: 1.15em; min-width: auto; color: var(--xam-text); }
+            /* Phóng to Icon và nới khoảng cách cho chữ dễ nhìn */
+            .sidebar-menu li i { font-size: 1.4em; min-width: auto; color: inherit; }
             .sidebar-menu li.active { color: var(--cam-chinh) !important; background: transparent !important; }
             .sidebar-menu li.active i { color: var(--cam-chinh) !important; }
-            .sidebar-menu li span { display: block !important; font-size: 0.58em; font-weight: 600; white-space: nowrap; color: inherit; }
+            .sidebar-menu li span { display: block !important; font-size: 0.65em; font-weight: 700; white-space: nowrap; color: inherit; letter-spacing: 0.2px;}
             
-            .badge { top: 2px; right: calc(50% - 18px); width: 16px; height: 16px; font-size: 0.55em; padding: 0; display: flex !important; align-items: center; justify-content: center; border-radius: 50%; }
+            .badge { top: 0px; right: calc(50% - 22px); width: 18px; height: 18px; font-size: 0.6em; padding: 0; display: flex !important; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid white;}
 
+            /* Tăng padding-bottom cực khủng để lướt thoải mái không dính menu */
             .main-content { 
-                padding: 12px; padding-bottom: calc(75px + env(safe-area-inset-bottom)); height: 100vh; width: 100vw; overflow-y: auto; 
+                padding: 15px; padding-bottom: calc(130px + env(safe-area-inset-bottom)); height: 100vh; width: 100vw; overflow-y: auto; -webkit-overflow-scrolling: touch;
             }
             
-            .pos-layout { flex-direction: column; gap: 12px; height: auto; overflow: visible; }
-            .pos-products { max-height: none; overflow: visible; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
-            .pos-cart { position: static; width: 100%; height: auto; min-width: 0; box-shadow: none; margin-bottom: 20px;}
-            .cart-items { max-height: 200px; }
+            .pos-layout { flex-direction: column; gap: 15px; height: auto; overflow: visible; }
+            .pos-products { max-height: none; overflow: visible; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding-bottom: 20px;}
+            .pos-cart { position: static; width: 100%; height: auto; min-width: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 10px;}
+            .cart-items { max-height: 250px; }
 
             .split-col { flex-direction: column; gap: 0; }
-            .manage-item { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .manage-item { flex-direction: column; align-items: flex-start; gap: 12px; }
             .manage-info { width: 100%; }
-            .manage-item .btn-action { width: 100%; justify-content: center; margin-top: 5px; }
+            /* Căn lề nút trên đt */
+            .manage-item > div:last-child { width: 100%; display: grid !important; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+            .manage-item .btn-action { width: 100%; justify-content: center; margin: 0;}
+            .toggle-checkbox { justify-content: center; }
 
-            .stats-summary { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .stat-box .val { font-size: 1.2em; }
+            .stats-summary { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .stat-box { padding: 15px; }
+            .stat-box .val { font-size: 1.4em; }
             .month-picker-container { width: 100%; justify-content: space-between; }
             
+            /* Modal hiển thị giữa màn hình trên di động */
             .modal { align-items: center; padding: 15px; }
-            .modal-content { width: 100% !important; max-height: 80vh; border-radius: 12px; padding: 20px !important; }
+            .modal-content { width: 100% !important; max-height: 85vh; border-radius: 16px; padding: 20px !important; }
             #recipe-modal .modal-content { flex-direction: column; width: 100% !important; }
-            .modal-img { padding: 10px; flex: none; }
-            .modal-img img { max-width: 110px; }
+            .modal-img { padding: 15px; flex: none; border-radius: 16px 16px 0 0;}
+            .modal-img img { max-width: 130px; }
             
-            #toast-container { bottom: calc(75px + env(safe-area-inset-bottom)); left: 10px; right: 10px; }
+            #toast-container { bottom: calc(85px + env(safe-area-inset-bottom)); left: 15px; right: 15px; }
         }
 
         @media print {
@@ -287,7 +317,7 @@
         <!-- 1. BÁN HÀNG -->
         <div id="pane-menu" class="tab-pane active">
             <div class="header-top">
-                <h1><i class="fa-solid fa-cash-register"></i> POS Thu Ngân</h1>
+                <h1><i class="fa-solid fa-store"></i> POS Thu Ngân</h1>
                 <button class="btn-kitchen-top" onclick="window.openKitchenModal()">
                     <i class="fa-regular fa-bell"></i> Pha Chế (<span id="top-badge">0</span>)
                 </button>
@@ -296,10 +326,10 @@
                 <div class="pos-products" id="render-products"></div>
                 <div class="pos-cart">
                     <input type="text" class="cashier-input" id="cashier-name" placeholder="Tên thu ngân (VD: Yến Nhi)">
-                    <h3 style="color: var(--cam-chinh); margin-bottom: 10px; font-size: 1.1em;">Giỏ hàng hiện tại</h3>
+                    <h3 style="color: var(--cam-chinh); margin-bottom: 10px; font-size: 1.1em; font-weight: 800;">Giỏ hàng hiện tại</h3>
                     <div class="cart-items" id="render-cart"></div>
                     <div class="cart-total">Tổng: <span id="cart-total-val" style="color: var(--cam-chinh);">0đ</span></div>
-                    <button class="btn-thanh-toan" onclick="window.checkout()"><i class="fa-solid fa-print"></i> THANH TOÁN</button>
+                    <button class="btn-thanh-toan" onclick="window.checkout()"><i class="fa-solid fa-print"></i> THANH TOÁN QUẦY</button>
                 </div>
             </div>
         </div>
@@ -309,15 +339,15 @@
             <div class="header-top"><h1><i class="fa-solid fa-square-plus"></i> Quản Lý Món Nước</h1></div>
             <div class="manage-container">
                 <div class="form-add">
-                    <h3 id="form-title" style="margin-bottom: 15px; color: var(--cam-chinh);">Thêm Món Mới</h3>
-                    <input type="hidden" id="edit-product-id" value="">
+                    <h3 style="margin-bottom: 20px; color: var(--cam-chinh); font-size: 1.2em; border-bottom: 1px dashed var(--vien); padding-bottom: 10px;"><i class="fa-solid fa-plus-circle"></i> Thêm Món Mới</h3>
+                    
                     <div class="form-group">
                         <label>Hình Ảnh Nước</label>
                         <div class="image-upload-box">
                             <input type="file" id="add-image-file" accept="image/*" onchange="window.previewImageFile(event)">
                             <div class="upload-placeholder" id="upload-text">
-                                <i class="fa-solid fa-image" style="font-size: 2.5em; color: var(--cam-chinh); margin-bottom: 10px; display: block;"></i>
-                                <span><b>Nhấn vào đây</b> để tải ảnh lên<br>Hoặc bấm <b>Ctrl + V</b> để dán ảnh.</span>
+                                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.5em; color: var(--cam-chinh); margin-bottom: 10px; display: block;"></i>
+                                <span style="color: #6B7280;"><b>Nhấn vào đây</b> để tải ảnh lên<br>Hoặc bấm <b>Ctrl + V</b> để dán ảnh.</span>
                             </div>
                             <div class="img-preview-wrapper" id="img-preview-wrapper">
                                 <img id="img-preview" src="">
@@ -352,14 +382,11 @@
                         <label>Công thức pha chế (Mỗi bước 1 dòng)</label>
                         <textarea id="add-recipe" placeholder="Bước 1: Chuẩn bị...&#10;Bước 2: Ép lấy nước..."></textarea>
                     </div>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn-thanh-toan" id="btn-save-product" onclick="window.saveProduct()"><i class="fa-solid fa-check"></i> LƯU MÓN</button>
-                        <button class="btn-thanh-toan" id="btn-cancel-edit" onclick="window.resetProductForm()" style="background: #888; display: none;">HỦY SỬA</button>
-                    </div>
+                    <button class="btn-thanh-toan" onclick="window.saveNewProduct()"><i class="fa-solid fa-check"></i> LƯU MÓN MỚI</button>
                 </div>
 
                 <div class="manage-list">
-                    <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-list"></i> Danh sách món</h3>
+                    <h3 style="margin-bottom: 20px; font-size: 1.2em; color: #1F2937; border-bottom: 1px dashed var(--vien); padding-bottom: 10px;"><i class="fa-solid fa-list-ul"></i> Danh sách món hiện tại</h3>
                     <div id="render-manage-items"></div>
                 </div>
             </div>
@@ -368,7 +395,7 @@
         <!-- 3. LỊCH SỬ BILL -->
         <div id="pane-history" class="tab-pane">
             <div class="header-actions">
-                <h1><i class="fa-solid fa-receipt"></i> Quản Lý Bill</h1>
+                <h1><i class="fa-solid fa-receipt"></i> Quản Lý Lịch Sử Bill</h1>
                 <button class="btn-action btn-excel" onclick="window.exportExcelGlobal()"><i class="fa-solid fa-file-excel"></i> Xuất CSV Giao Dịch</button>
             </div>
             <div class="table-container">
@@ -397,7 +424,7 @@
         <!-- 4. THỐNG KÊ -->
         <div id="pane-stats" class="tab-pane">
             <div class="header-actions">
-                <h1><i class="fa-solid fa-chart-pie"></i> Báo Cáo Doanh Thu (Thu/Chi)</h1>
+                <h1><i class="fa-solid fa-chart-pie"></i> Báo Cáo Doanh Thu</h1>
                 <button class="btn-action btn-excel" onclick="window.exportExcelGlobal()"><i class="fa-solid fa-file-excel"></i> Xuất CSV Báo Cáo</button>
             </div>
             
@@ -419,23 +446,73 @@
                 </div>
                 <div class="stat-box">
                     <i class="fa-solid fa-sack-dollar bg-icon" style="color: rgba(40, 167, 69, 0.1);"></i>
-                    <h3 style="color: #28a745;">TỔNG THÁNG ĐANG CHỌN</h3>
-                    <div class="val" id="stat-month" style="color: #28a745;">0đ</div>
+                    <h3 style="color: #10B981;">TỔNG THÁNG ĐANG CHỌN</h3>
+                    <div class="val" id="stat-month" style="color: #10B981;">0đ</div>
                 </div>
             </div>
 
             <div class="month-picker-container">
-                <label style="font-weight: bold; color: #333;"><i class="fa-regular fa-calendar"></i> Xem lịch sử:</label>
-                <select id="stat-month-select" onchange="window.renderStats()" style="padding: 5px;"></select>
-                <select id="stat-year-select" onchange="window.renderStats()" style="padding: 5px;"></select>
+                <label style="font-weight: 700; color: #4B5563;"><i class="fa-regular fa-calendar"></i> Xem lịch sử:</label>
+                <select id="stat-month-select" onchange="window.renderStats()"></select>
+                <select id="stat-year-select" onchange="window.renderStats()"></select>
             </div>
             <div class="calendar-grid" id="render-calendar"></div>
         </div>
     </div>
 
+    <!-- MODAL SỬA MÓN (CHUYÊN NGHIỆP GIỮA MÀN HÌNH) -->
+    <div class="modal" id="edit-product-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="window.closeEditProductModal()">&times;</span>
+            <h2 style="color: var(--cam-chinh); margin-bottom: 20px; font-weight: 800;"><i class="fa-solid fa-pen-to-square"></i> Cập Nhật Thông Tin Món</h2>
+            
+            <input type="hidden" id="modal-edit-product-id">
+            
+            <div class="form-group">
+                <label>Hình Ảnh (Bỏ trống nếu muốn giữ ảnh cũ)</label>
+                <div class="image-upload-box" style="padding: 10px;">
+                    <input type="file" id="modal-edit-image-file" accept="image/*" onchange="window.previewModalImageFile(event)">
+                    <div class="img-preview-wrapper" id="modal-edit-img-preview-wrapper" style="display: block; margin: 0 auto;">
+                        <img id="modal-edit-img-preview" src="">
+                    </div>
+                </div>
+                <input type="hidden" id="modal-edit-image-base64">
+            </div>
+            <div class="form-group">
+                <label>Phân loại nhóm</label>
+                <select id="modal-edit-category">
+                    <option value="sinhto">Sinh Tố & Nước Ép</option>
+                    <option value="tra">Các Loại Trà</option>
+                    <option value="cafe">Cà Phê</option>
+                    <option value="khac">Khác</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tên món nước</label>
+                <input type="text" id="modal-edit-name">
+            </div>
+            <div class="split-col">
+                <div class="form-group">
+                    <label>Giá Size S (VNĐ)</label>
+                    <input type="number" id="modal-edit-price-s">
+                </div>
+                <div class="form-group">
+                    <label>Giá Size L (VNĐ)</label>
+                    <input type="number" id="modal-edit-price-l">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Công thức pha chế</label>
+                <textarea id="modal-edit-recipe"></textarea>
+            </div>
+            
+            <button class="btn-thanh-toan" onclick="window.saveEditedProduct()"><i class="fa-solid fa-floppy-disk"></i> LƯU THAY ĐỔI</button>
+        </div>
+    </div>
+
     <!-- MODAL BẾP -->
     <div class="modal" id="kitchen-modal">
-        <div class="modal-content">
+        <div class="modal-content" style="width: 450px;">
             <span class="close-btn" onclick="window.closeKitchenModal()">&times;</span>
             <h2 style="color: var(--cam-chinh); margin-bottom: 20px;"><i class="fa-solid fa-bell"></i> ĐƠN CHỜ PHA CHẾ</h2>
             <div id="kitchen-orders-list"></div>
@@ -461,7 +538,7 @@
         <div class="modal-content">
             <span class="close-btn" onclick="window.closeEditBillModal()">&times;</span>
             <h2 style="color: var(--cam-chinh); margin-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Chỉnh Sửa Bill: <span id="edit-modal-bill-id"></span></h2>
-            <p style="color: #666; font-size: 0.9em; margin-bottom: 20px;">Bạn có thể thay đổi số lượng, xóa món hoặc thêm món mới bị thiếu vào bill này.</p>
+            <p style="color: #6B7280; font-size: 0.9em; margin-bottom: 20px;">Bạn có thể thay đổi số lượng, xóa món hoặc thêm món mới bị thiếu vào bill này.</p>
             
             <div class="add-new-item-box">
                 <select id="edit-add-product-id"></select>
@@ -469,15 +546,15 @@
                     <option value="S">Size S</option>
                     <option value="L">Size L</option>
                 </select>
-                <button class="btn-action btn-excel" style="margin: 0;" onclick="window.editBillAddNewItem()"><i class="fa-solid fa-plus"></i> Thêm</button>
+                <button class="btn-action btn-excel" style="margin: 0; padding: 10px;" onclick="window.editBillAddNewItem()"><i class="fa-solid fa-plus"></i> Thêm</button>
             </div>
-            <hr style="border: 0.5px solid #eee; margin-bottom: 15px;">
+            <hr style="border: 0.5px solid #E5E7EB; margin-bottom: 15px;">
             
             <div id="edit-modal-items-list" style="max-height: 250px; overflow-y: auto;"></div>
-            <div style="text-align: right; margin-top: 20px; font-size: 1.3em; font-weight: bold; border-top: 2px dashed #ccc; padding-top: 15px;">
+            <div style="text-align: right; margin-top: 20px; font-size: 1.3em; font-weight: 800; border-top: 2px dashed #D1D5DB; padding-top: 15px;">
                 Tổng Tiền Mới: <span id="edit-modal-total" style="color: var(--cam-chinh);">0đ</span>
             </div>
-            <button class="btn-thanh-toan" style="margin-top: 20px;" onclick="window.saveEditedBill()"><i class="fa-solid fa-floppy-disk"></i> LƯU THAY ĐỔI TRÊN CLOUD</button>
+            <button class="btn-thanh-toan" style="margin-top: 20px;" onclick="window.saveEditedBill()"><i class="fa-solid fa-cloud-arrow-up"></i> LƯU LÊN CLOUD</button>
         </div>
     </div>
     
@@ -487,9 +564,9 @@
             <span class="close-btn" onclick="window.closeRecipeModal()">&times;</span>
             <div class="modal-img"><img id="modal-img-src" src="" alt=""></div>
             <div class="modal-info">
-                <h2 id="modal-title" style="color: var(--cam-chinh); margin-bottom: 5px;">Tên món</h2>
-                <hr style="border:0.5px solid #eee; margin: 10px 0;">
-                <h3 style="font-size: 1.1em; color: #333;">Cách làm:</h3>
+                <h2 id="modal-title" style="color: var(--cam-chinh); margin-bottom: 5px; font-weight: 800;">Tên món</h2>
+                <hr style="border:0.5px solid #E5E7EB; margin: 10px 0;">
+                <h3 style="font-size: 1.1em; color: #1F2937;">Cách làm:</h3>
                 <ol class="recipe-steps" id="modal-steps"></ol>
             </div>
         </div>
@@ -550,7 +627,7 @@
             const ySelect = document.getElementById('stat-year-select');
             const now = new Date();
             for(let i=1; i<=12; i++) mSelect.innerHTML += `<option value="${i}">Tháng ${i}</option>`;
-            for(let i=2024; i<=2060; i++) ySelect.innerHTML += `<option value="${i}">Năm ${i}</option>`; // Mở rộng đến năm 2060
+            for(let i=2024; i<=2060; i++) ySelect.innerHTML += `<option value="${i}">Năm ${i}</option>`;
             mSelect.value = now.getMonth() + 1; ySelect.value = now.getFullYear();
         }
 
@@ -564,8 +641,12 @@
             if(el) el.classList.add('active');
         }
 
-        window.previewImageFile = function(event) { processFile(event.target.files[0]); }
-        function processFile(file) {
+        // Xử lý nén ảnh cho Form Thêm Mới
+        window.previewImageFile = function(event) { processFile(event.target.files[0], 'add-image-base64', 'img-preview', 'img-preview-wrapper', 'upload-text'); }
+        // Xử lý nén ảnh cho Modal Sửa Món
+        window.previewModalImageFile = function(event) { processFile(event.target.files[0], 'modal-edit-image-base64', 'modal-edit-img-preview', 'modal-edit-img-preview-wrapper', null); }
+
+        function processFile(file, hiddenInputId, imgElementId, wrapperId, placeholderId) {
             if (!file || !file.type.match('image.*')) return;
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -581,19 +662,25 @@
                     ctx.drawImage(img, 0, 0, width, height);
                     const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
                     
-                    document.getElementById('add-image-base64').value = compressedBase64; 
-                    document.getElementById('img-preview').src = compressedBase64;
-                    document.getElementById('img-preview-wrapper').style.display = 'block';
-                    document.getElementById('upload-text').style.display = 'none';
+                    document.getElementById(hiddenInputId).value = compressedBase64; 
+                    document.getElementById(imgElementId).src = compressedBase64;
+                    document.getElementById(wrapperId).style.display = 'block';
+                    if(placeholderId) document.getElementById(placeholderId).style.display = 'none';
                 }
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
+        
         document.addEventListener('paste', function (e) {
             if (!document.getElementById('pane-manage').classList.contains('active')) return;
             const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-            for (let index in items) { if (items[index].kind === 'file') processFile(items[index].getAsFile()); }
+            for (let index in items) { 
+                if (items[index].kind === 'file') {
+                    // Mặc định paste ảnh vào form thêm mới
+                    processFile(items[index].getAsFile(), 'add-image-base64', 'img-preview', 'img-preview-wrapper', 'upload-text');
+                }
+            }
         });
 
         function renderMenu() {
@@ -607,7 +694,7 @@
                         const isSoldOut = p.soldOut ? 'sold-out' : '';
                         const clickAction = p.soldOut ? '' : `onclick="window.addToCart('${p.id}', 'S', ${p.priceS})"`;
                         const clickActionL = p.soldOut ? '' : `onclick="window.addToCart('${p.id}', 'L', ${p.priceL})"`;
-                        const soldOutBadge = p.soldOut ? '<div style="color:red; font-weight:bold; font-size:0.8em; margin-bottom:4px;">(TẠM HẾT)</div>' : '';
+                        const soldOutBadge = p.soldOut ? '<div style="color:#EF4444; font-weight:800; font-size:0.85em; margin-bottom:4px;">(TẠM HẾT MÓN)</div>' : '';
 
                         container.innerHTML += `
                             <div class="product-card ${isSoldOut}">
@@ -635,14 +722,14 @@
 
         function renderCart() {
             const container = document.getElementById('render-cart');
-            container.innerHTML = cart.length ? '' : '<p style="text-align:center; color:#999; margin-top: 20px;">Giỏ hàng trống</p>';
+            container.innerHTML = cart.length ? '' : '<p style="text-align:center; color:#9CA3AF; margin-top: 20px; font-weight: 500;">Giỏ hàng trống</p>';
             let total = 0;
             cart.forEach((c, index) => {
                 total += c.price * c.qty;
                 container.innerHTML += `
                     <div class="cart-item">
-                        <div><b>${c.name} (${c.size})</b><br><span style="color:#888; font-size:0.9em">${formatMoney(c.price)} x ${c.qty}</span></div>
-                        <div style="text-align:right"><span style="color:var(--cam-chinh); font-weight:bold">${formatMoney(c.price * c.qty)}</span> <i class="fa-solid fa-trash" style="color:red; cursor:pointer;" onclick="window.removeFromCart(${index})"></i></div>
+                        <div><b style="color: #1F2937;">${c.name} <span style="background:var(--cam-nhat); color:var(--cam-dam); padding:2px 6px; border-radius:4px; font-size:0.8em; margin-left: 5px;">Size ${c.size}</span></b><br><span style="color:#6B7280; font-size:0.95em">${formatMoney(c.price)} x ${c.qty}</span></div>
+                        <div style="text-align:right; display:flex; align-items:center; gap:10px;"><span style="color:var(--cam-chinh); font-weight:800">${formatMoney(c.price * c.qty)}</span> <i class="fa-solid fa-trash" style="color:#EF4444; cursor:pointer; padding:5px;" onclick="window.removeFromCart(${index})"></i></div>
                     </div>`;
             });
             document.getElementById('cart-total-val').innerText = formatMoney(total);
@@ -675,7 +762,7 @@
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.onclick = window.openKitchenModal;
-            toast.innerHTML = `<i class="fa-solid fa-bell" style="font-size: 1.8em;"></i><div><b style="font-size: 1.1em;">ĐƠN HÀNG MỚI ĐƯỢC ĐỒNG BỘ!</b><br><span style="font-size:0.9em">Đang có ${pendingOrders.length} đơn chờ pha chế. Bấm để xem.</span></div>`;
+            toast.innerHTML = `<i class="fa-solid fa-bell" style="font-size: 1.8em;"></i><div><b style="font-size: 1.1em; letter-spacing: 0.5px;">ĐƠN HÀNG MỚI!</b><br><span style="font-size:0.95em">Đang có ${pendingOrders.length} đơn chờ pha chế. Bấm để xem.</span></div>`;
             container.appendChild(toast);
             setTimeout(() => { if(container.contains(toast)) toast.remove(); }, 6000);
         }
@@ -684,11 +771,11 @@
             const list = document.getElementById('kitchen-orders-list');
             list.innerHTML = '';
             if(pendingOrders.length === 0) {
-                list.innerHTML = '<p style="text-align:center; color:#888; padding: 20px;">Không còn đơn chờ nào!</p>';
+                list.innerHTML = '<p style="text-align:center; color:#6B7280; padding: 20px; font-weight: 500;">Không còn đơn chờ nào!</p>';
             } else {
                 pendingOrders.forEach((o) => {
                     let itemsHtml = o.items.map(i => `<div class="kitchen-item"><b><span style="color:var(--cam-chinh);">${i.qty} x</span></b> ${i.name} (Size ${i.size})</div>`).join('');
-                    list.innerHTML += `<div class="kitchen-order"><h3 style="color: var(--cam-chinh); margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px dashed #ccc; padding-bottom: 8px;">Mã: ${o.id.substring(0,6).toUpperCase()} <span>${o.timeStr}</span></h3>${itemsHtml}<button class="btn-done" onclick="window.finishOrder('${o.id}')"><i class="fa-solid fa-check-double"></i> ĐÃ PHA XONG</button></div>`;
+                    list.innerHTML += `<div class="kitchen-order"><h3 style="color: var(--cam-chinh); margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px dashed #D1D5DB; padding-bottom: 8px;">Mã: ${o.id.substring(0,6).toUpperCase()} <span style="color:#6B7280;">${o.timeStr}</span></h3>${itemsHtml}<button class="btn-done" onclick="window.finishOrder('${o.id}')"><i class="fa-solid fa-check-double"></i> ĐÃ PHA XONG</button></div>`;
                 });
             }
             document.getElementById('kitchen-modal').style.display = 'flex';
@@ -711,7 +798,7 @@
                         container.innerHTML += `
                             <div class="recipe-card" onclick="window.showRecipeDetail('${p.id}')">
                                 <img src="${p.img}">
-                                <h4 style="color: var(--cam-chinh); margin-top: 10px;">${p.name}</h4>
+                                <h4 style="color: var(--cam-chinh); margin-top: 10px; font-weight: 800;">${p.name}</h4>
                             </div>
                         `;
                     });
@@ -722,7 +809,7 @@
             const p = products.find(x => x.id === id);
             document.getElementById('modal-img-src').src = p.img;
             document.getElementById('modal-title').innerText = p.name;
-            const steps = p.recipe ? p.recipe.split('\n').map(line => `<li>${line}</li>`).join('') : 'Chưa có công thức';
+            const steps = p.recipe ? p.recipe.split('\n').map(line => `<li>${line}</li>`).join('') : 'Chưa cập nhật công thức';
             document.getElementById('modal-steps').innerHTML = steps;
             document.getElementById('recipe-modal').style.display = 'flex';
         }
@@ -735,16 +822,16 @@
                     <div class="manage-info">
                         <img src="${p.img}">
                         <div>
-                            <b>${p.name}</b> ${p.soldOut ? '<span style="color:red; font-size:0.8em;">(Tạm hết)</span>' : ''}<br>
-                            <span style="font-size:0.85em;color:#666;">S: ${formatMoney(p.priceS)} | L: ${formatMoney(p.priceL)}</span>
+                            <b style="font-size: 1.05em; color: #111827;">${p.name}</b> ${p.soldOut ? '<span style="color:#EF4444; font-size:0.8em; font-weight: bold; background: #FEE2E2; padding: 2px 6px; border-radius: 4px; margin-left: 5px;">(Tạm hết)</span>' : ''}<br>
+                            <span style="font-size:0.9em;color:#6B7280; margin-top: 4px; display: block;">S: ${formatMoney(p.priceS)} | L: ${formatMoney(p.priceL)}</span>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 5px; align-items: center;">
-                        <label style="font-size: 0.8em; display:flex; align-items:center; gap:3px; cursor:pointer;" title="Tích để đánh dấu tạm hết món">
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <label class="toggle-checkbox" title="Tích để đánh dấu tạm hết món">
                             <input type="checkbox" ${p.soldOut ? 'checked' : ''} onchange="window.toggleSoldOut('${p.id}', this.checked)"> Tạm hết
                         </label>
                         <button class="btn-action btn-edit" onclick="window.editProduct('${p.id}')"><i class="fa-solid fa-pen"></i> Sửa</button>
-                        <button class="btn-action btn-delete" onclick="window.deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                        <button class="btn-action btn-delete" onclick="window.deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>`).join('');
         }
@@ -757,27 +844,48 @@
             }
         }
 
+        /* Gọi Modal popup lên để sửa thay vì form ở trên cùng */
         window.editProduct = function(id) {
             const p = products.find(item => item.id === id);
             if(!p) return;
-            document.getElementById('edit-product-id').value = p.id;
-            document.getElementById('add-name').value = p.name;
-            document.getElementById('add-price-s').value = p.priceS;
-            document.getElementById('add-price-l').value = p.priceL;
-            document.getElementById('add-recipe').value = p.recipe || '';
-            document.getElementById('add-category').value = p.category;
-            document.getElementById('add-image-base64').value = p.img;
-            document.getElementById('img-preview').src = p.img;
-            document.getElementById('img-preview-wrapper').style.display = 'block';
-            document.getElementById('upload-text').style.display = 'none';
-            document.getElementById('form-title').innerText = "Chỉnh Sửa Món Nước";
-            document.getElementById('btn-save-product').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> CẬP NHẬT`;
-            document.getElementById('btn-cancel-edit').style.display = 'flex';
-            document.getElementById('pane-manage').scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('modal-edit-product-id').value = p.id;
+            document.getElementById('modal-edit-name').value = p.name;
+            document.getElementById('modal-edit-price-s').value = p.priceS;
+            document.getElementById('modal-edit-price-l').value = p.priceL;
+            document.getElementById('modal-edit-recipe').value = p.recipe || '';
+            document.getElementById('modal-edit-category').value = p.category;
+            
+            document.getElementById('modal-edit-image-base64').value = p.img;
+            document.getElementById('modal-edit-img-preview').src = p.img;
+            
+            document.getElementById('edit-product-modal').style.display = 'flex';
+        }
+        
+        window.closeEditProductModal = function() {
+            document.getElementById('edit-product-modal').style.display = 'none';
+        }
+
+        window.saveEditedProduct = async function() {
+            const id = document.getElementById('modal-edit-product-id').value;
+            const name = document.getElementById('modal-edit-name').value;
+            const priceS = parseInt(document.getElementById('modal-edit-price-s').value);
+            const priceL = parseInt(document.getElementById('modal-edit-price-l').value);
+            const recipe = document.getElementById('modal-edit-recipe').value;
+            const cat = document.getElementById('modal-edit-category').value;
+            const img = document.getElementById('modal-edit-image-base64').value;
+
+            if(!name || !priceS || !priceL) return alert("Vui lòng điền đủ Tên và Giá!");
+            
+            let productData = { category: cat, name, priceS, priceL, recipe, img };
+
+            try {
+                await setDoc(doc(db, "melon_products", id), productData, { merge: true });
+                alert("Đã cập nhật món thành công!");
+                window.closeEditProductModal();
+            } catch (e) { alert("Lỗi khi lưu món: " + e.message); }
         }
 
         window.resetProductForm = function() {
-            document.getElementById('edit-product-id').value = '';
             document.getElementById('add-name').value = '';
             document.getElementById('add-price-s').value = '';
             document.getElementById('add-price-l').value = '';
@@ -785,9 +893,6 @@
             document.getElementById('add-image-base64').value = '';
             document.getElementById('img-preview-wrapper').style.display = 'none';
             document.getElementById('upload-text').style.display = 'block';
-            document.getElementById('form-title').innerText = "Thêm Món Mới";
-            document.getElementById('btn-save-product').innerHTML = `<i class="fa-solid fa-check"></i> LƯU MÓN`;
-            document.getElementById('btn-cancel-edit').style.display = 'none';
         }
 
         function populateEditProductDropdown() {
@@ -795,8 +900,7 @@
             select.innerHTML = products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
         }
 
-        window.saveProduct = async function() {
-            const editId = document.getElementById('edit-product-id').value;
+        window.saveNewProduct = async function() {
             const name = document.getElementById('add-name').value;
             const priceS = parseInt(document.getElementById('add-price-s').value);
             const priceL = parseInt(document.getElementById('add-price-l').value);
@@ -806,23 +910,17 @@
 
             if(!name || !priceS || !priceL) return alert("Vui lòng điền đủ Tên và Giá!");
             
-            let productData = { category: cat, name, priceS, priceL, recipe, img };
+            let productData = { category: cat, name, priceS, priceL, recipe, img, soldOut: false };
 
             try {
-                if(editId) {
-                    await setDoc(doc(db, "melon_products", editId), productData, { merge: true });
-                    alert("Đã cập nhật món thành công!");
-                } else {
-                    productData.soldOut = false;
-                    await addDoc(collection(db, "melon_products"), productData);
-                    alert("Đã thêm món mới thành công!");
-                }
+                await addDoc(collection(db, "melon_products"), productData);
+                alert("Đã thêm món mới thành công!");
                 window.resetProductForm();
-            } catch (e) { alert("Lỗi khi lưu món: " + e.message); }
+            } catch (e) { alert("Lỗi khi thêm món: " + e.message); }
         }
 
         window.deleteProduct = async function(id) {
-            if(confirm("Xóa vĩnh viễn món này khỏi Cloud?")) {
+            if(confirm("Xóa vĩnh viễn món này khỏi hệ thống?")) {
                 try { await deleteDoc(doc(db, "melon_products", id)); } 
                 catch(e) { alert("Lỗi: " + e.message); }
             }
@@ -832,38 +930,39 @@
             const tbody = document.getElementById('render-history');
             tbody.innerHTML = '';
             [...bills].reverse().forEach(b => {
-                let itemsText = b.items.map(i => `${i.name}(${i.size})x${i.qty}`).join(", ");
+                let itemsText = b.items.map(i => `<b style="color:#111827">${i.name}</b>(${i.size})x${i.qty}`).join(" <span style='color:#D1D5DB'>|</span> ");
                 tbody.innerHTML += `
                     <tr class="history-row" onclick="window.openPreviewModal('${b.id}')">
                         <td><span class="bill-link">${b.id.substring(0,6).toUpperCase()}</span></td>
-                        <td>${b.timeStr} <span style="font-size:0.8em;color:#888">${b.dateStr}</span></td>
-                        <td>${b.cashier}</td>
-                        <td style="font-size:0.85em; max-width: 250px; white-space: normal;">${itemsText}</td>
-                        <td style="color:var(--cam-chinh); font-weight:bold;">${formatMoney(b.total)}</td>
+                        <td style="color:#6B7280; font-weight:500;">${b.timeStr} <span style="font-size:0.85em;color:#9CA3AF">${b.dateStr}</span></td>
+                        <td style="font-weight:600;">${b.cashier}</td>
+                        <td style="font-size:0.9em; max-width: 250px; white-space: normal; line-height:1.4;">${itemsText}</td>
+                        <td style="color:var(--cam-chinh); font-weight:800; font-size:1.1em;">${formatMoney(b.total)}</td>
                         <td style="text-align: center;" onclick="event.stopPropagation()">
-                            <button class="btn-action btn-delete" onclick="window.deleteBill('${b.id}')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                            <button class="btn-action btn-delete" style="padding: 8px 15px;" onclick="window.deleteBill('${b.id}')"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
             });
         }
+
         window.openPreviewModal = function(billId) {
             const bill = bills.find(b => b.id === billId);
             if(!bill) return;
             currentPreviewBillId = billId;
             let itemsHtml = bill.items.map(i => `<div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><div style="flex: 2;">${i.name} (${i.size})</div><div style="flex: 1; text-align: center;">x${i.qty}</div><div style="flex: 1; text-align: right;">${formatMoney(i.price * i.qty)}</div></div>`).join('');
             document.getElementById('preview-receipt-content').innerHTML = `
-                <div style="text-align:center; margin-bottom: 10px;"><h2 style="margin:0; font-size: 1.6em;">MELON COFFEE</h2></div>
-                <div style="border-bottom: 1px dashed #000; margin-bottom: 10px;"></div>
-                <p style="margin: 2px 0;"><b>Mã HĐ:</b> ${bill.id.substring(0,6).toUpperCase()}</p>
-                <p style="margin: 2px 0;"><b>Ngày:</b> ${bill.timeStr} - ${bill.dateStr}</p>
-                <p style="margin: 2px 0;"><b>Thu ngân:</b> ${bill.cashier}</p>
-                <div style="border-bottom: 1px dashed #000; margin: 10px 0;"></div>
-                <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;"><div style="flex: 2;">Tên món</div><div style="flex: 1; text-align: center;">SL</div><div style="flex: 1; text-align: right;">TT</div></div>
+                <div style="text-align:center; margin-bottom: 10px;"><h2 style="margin:0; font-size: 1.6em; font-weight:800;">MELON COFFEE</h2></div>
+                <div style="border-bottom: 1px dashed #9CA3AF; margin-bottom: 15px;"></div>
+                <p style="margin: 4px 0;"><b>Mã HĐ:</b> ${bill.id.substring(0,6).toUpperCase()}</p>
+                <p style="margin: 4px 0;"><b>Ngày:</b> ${bill.timeStr} - ${bill.dateStr}</p>
+                <p style="margin: 4px 0;"><b>Thu ngân:</b> ${bill.cashier}</p>
+                <div style="border-bottom: 1px dashed #9CA3AF; margin: 15px 0;"></div>
+                <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 8px;"><div style="flex: 2;">Tên món</div><div style="flex: 1; text-align: center;">SL</div><div style="flex: 1; text-align: right;">TT</div></div>
                 ${itemsHtml}
-                <div style="border-bottom: 1px dashed #000; margin: 10px 0;"></div>
-                <div style="text-align: right; font-size: 1.3em; font-weight: bold;">TỔNG CỘNG: ${formatMoney(bill.total)}</div>
-                <p style="text-align:center; margin-top: 15px; font-size: 0.85em;">Cảm ơn quý khách & Hẹn gặp lại!</p>
+                <div style="border-bottom: 1px dashed #9CA3AF; margin: 15px 0;"></div>
+                <div style="text-align: right; font-size: 1.3em; font-weight: 800;">TỔNG: ${formatMoney(bill.total)}</div>
+                <p style="text-align:center; margin-top: 20px; font-size: 0.85em; color: #4B5563;">Cảm ơn quý khách & Hẹn gặp lại!</p>
             `;
             document.getElementById('preview-bill-modal').style.display = 'flex';
         }
@@ -895,10 +994,10 @@
         function renderEditBillItems() {
             const container = document.getElementById('edit-modal-items-list');
             let total = 0; container.innerHTML = '';
-            if(tempEditBill.items.length === 0) container.innerHTML = '<p style="text-align:center; color:red;">Bill đang trống! Hãy thêm món hoặc xóa luôn bill này.</p>';
+            if(tempEditBill.items.length === 0) container.innerHTML = '<p style="text-align:center; color:#EF4444; font-weight:600;">Bill đang trống! Hãy thêm món hoặc xóa luôn bill này.</p>';
             tempEditBill.items.forEach((item, index) => {
                 total += item.price * item.qty;
-                container.innerHTML += `<div class="edit-row"><div><b style="color:#333; font-size:1.1em;">${item.name}</b> <span style="background:var(--cam-chinh); color:white; padding:2px 5px; border-radius:3px; font-size:0.8em;">Size ${item.size}</span><div style="color:#666; font-size:0.9em; margin-top:5px;">Đơn giá: ${formatMoney(item.price)}</div></div><div class="qty-controls"><button class="qty-btn" onclick="window.updateTempBillQty(${index}, -1)">-</button><span style="font-weight:bold; font-size:1.2em; width:20px; text-align:center;">${item.qty}</span><button class="qty-btn" onclick="window.updateTempBillQty(${index}, 1)">+</button><button class="btn-action btn-delete" style="margin-left:15px; padding: 6px 10px;" onclick="window.removeTempBillItem(${index})"><i class="fa-solid fa-xmark"></i></button></div></div>`;
+                container.innerHTML += `<div class="edit-row"><div><b style="color:#111827; font-size:1.1em;">${item.name}</b> <span style="background:var(--cam-chinh); color:white; padding:2px 6px; border-radius:4px; font-size:0.8em; font-weight:bold;">Size ${item.size}</span><div style="color:#6B7280; font-size:0.9em; margin-top:6px;">Đơn giá: ${formatMoney(item.price)}</div></div><div class="qty-controls"><button class="qty-btn" onclick="window.updateTempBillQty(${index}, -1)">-</button><span style="font-weight:800; font-size:1.2em; width:25px; text-align:center;">${item.qty}</span><button class="qty-btn" onclick="window.updateTempBillQty(${index}, 1)">+</button><button class="btn-action btn-delete" style="margin-left:15px; padding: 6px 12px;" onclick="window.removeTempBillItem(${index})"><i class="fa-solid fa-xmark"></i></button></div></div>`;
             });
             tempEditBill.total = total;
             document.getElementById('edit-modal-total').innerText = formatMoney(total);
@@ -950,8 +1049,8 @@
             let startDay = new Date(year, month, 1).getDay(); startDay = startDay === 0 ? 6 : startDay - 1;
 
             const grid = document.getElementById('render-calendar');
-            grid.innerHTML = ['T2','T3','T4','T5','T6','T7','<span style="color:red">CN</span>'].map(d => `<div style="text-align:center;font-weight:bold;color:#888">${d}</div>`).join('');
-            for(let i=0; i<startDay; i++) grid.innerHTML += `<div class="cal-cell" style="border:none; background:transparent"></div>`;
+            grid.innerHTML = ['T2','T3','T4','T5','T6','T7','<span style="color:#EF4444">CN</span>'].map(d => `<div style="text-align:center;font-weight:800;color:#6B7280; font-size:0.9em;">${d}</div>`).join('');
+            for(let i=0; i<startDay; i++) grid.innerHTML += `<div class="cal-cell" style="border:none; background:transparent; box-shadow:none;"></div>`;
             
             for(let i=1; i<=lastDate; i++) {
                 let dStr = getCustomDateString(new Date(year, month, i));
@@ -966,12 +1065,13 @@
             document.getElementById('stat-month').innerText = formatMoney(tMonth);
         }
 
+        // Tối ưu hàm xuất Excel chuẩn, hiển thị 1 dòng cho mỗi hóa đơn để dễ đọc
         window.exportExcelGlobal = function() {
-            let csv = "Ma Bill,Ngay Gio,Thu Ngan,Ten Thuc Uong,Size,So Luong,Don Gia,Tong Cong\n";
+            let csv = "Mã Bill,Ngày Giờ,Thu Ngân,Chi Tiết Món (Tên - Size - SL),Tổng Tiền\n";
             bills.forEach(b => {
-                b.items.forEach(item => {
-                    csv += `${b.id},${b.timeStr} ${b.dateStr},${b.cashier},${item.name},${item.size},${item.qty},${item.price},${item.price * item.qty}\n`;
-                });
+                let itemsStr = b.items.map(i => `${i.name}(${i.size})x${i.qty}`).join(" | ");
+                itemsStr = `"${itemsStr}"`; // Bọc chuỗi để Excel không tự cắt cột bằng dấu phẩy
+                csv += `${b.id.substring(0,6).toUpperCase()},${b.timeStr} ${b.dateStr},${b.cashier},${itemsStr},${b.total}\n`;
             });
             const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
