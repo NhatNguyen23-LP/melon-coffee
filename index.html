@@ -26,8 +26,10 @@
             --vien: #E5E7EB;
         }
 
+        /* Nâng cấp font chữ mượt mà và chuyên nghiệp hơn */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
         
+        /* Hỗ trợ chuẩn chiều cao 100dvh cho iOS Safari mới nhất */
         body { background-color: var(--xam-nhat); display: flex; height: 100vh; height: 100dvh; width: 100vw; overflow: hidden; }
 
         /* --- SIDEBAR MẶC ĐỊNH (DESKTOP) --- */
@@ -121,6 +123,7 @@
         .btn-excel { background: #10B981; color: white; font-size: 0.95em; padding: 12px 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);}
         .btn-excel:hover { background: #059669; transform: translateY(-2px);}
 
+        /* Khung Checkbox chuyên nghiệp */
         .toggle-checkbox { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.85em; font-weight: 600; color: #4B5563; padding: 6px 10px; background: #F3F4F6; border-radius: 8px; transition: 0.2s;}
         .toggle-checkbox:hover { background: #E5E7EB; }
         .toggle-checkbox input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--cam-chinh); }
@@ -159,7 +162,7 @@
         .cal-date { font-size: 0.85em; color: #6B7280; font-weight: 700; }
         .cal-rev { color: var(--cam-chinh); font-weight: 800; font-size: 0.9em; text-align: right;}
 
-        /* --- MODAL CHUNG --- */
+        /* --- MODAL CHUNG CỰC KỲ CHUYÊN NGHIỆP NỔI CHÍNH GIỮA --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.7); z-index: 2000; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(4px); }
         .modal-content { background: #fff; width: 550px; max-width: 100%; max-height: 90vh; border-radius: 20px; display: flex; overflow-y: auto; position: relative; flex-direction: column; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
         @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -210,13 +213,13 @@
             .sidebar { 
                 position: fixed; bottom: 0; left: 0; width: 100% !important; 
                 height: calc(75px + env(safe-area-inset-bottom)); 
-                padding-bottom: env(safe-area-inset-bottom);
+                padding-bottom: calc(15px + env(safe-area-inset-bottom)); 
                 flex-direction: row; border-top: 1px solid var(--vien); border-right: none; 
                 z-index: 999; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); box-shadow: 0 -5px 20px rgba(0,0,0,0.06);
             }
             .sidebar-header { display: none !important; } 
             .sidebar-menu { 
-                flex-direction: row; padding: 0 5px; width: 100%; justify-content: space-around; align-items: center; height: 75px;
+                flex-direction: row; padding: 0 5px; width: 100%; justify-content: space-around; align-items: center; height: 60px;
             }
             .sidebar-menu li { 
                 flex: 1; flex-direction: column; gap: 4px; padding: 6px 0; 
@@ -228,23 +231,31 @@
             .sidebar-menu li.active i { color: var(--cam-chinh) !important; }
             .sidebar-menu li span { display: block !important; font-size: 0.65em; font-weight: 700; white-space: nowrap; color: inherit; letter-spacing: 0.2px;}
             
-            .badge { top: 4px; right: calc(50% - 22px); width: 18px; height: 18px; font-size: 0.6em; padding: 0; display: flex !important; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid white;}
+            .badge { top: 0px; right: calc(50% - 22px); width: 18px; height: 18px; font-size: 0.6em; padding: 0; display: flex !important; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid white;}
 
-            /* TẠO ĐỘ DÃN NỞ CỰC ĐẠI CHO CÁC KHUNG CHỨA (CHỐNG LẸM TRÊN IPHONE) */
             .main-content { 
                 padding: 15px !important; 
                 height: 100vh !important; height: 100dvh !important; 
                 width: 100vw; overflow-y: auto; -webkit-overflow-scrolling: touch;
             }
             
+            /* TUYỆT CHIÊU TRỊ BỆNH LẸM ĐÁY SAFARI: Chèn hẳn khối tàng hình vào cuối TẤT CẢ các tab */
+            .tab-pane::after {
+                content: '';
+                display: block;
+                height: calc(160px + env(safe-area-inset-bottom));
+                min-height: calc(160px + env(safe-area-inset-bottom));
+                width: 100%;
+                flex-shrink: 0;
+            }
+            
             .pos-layout { flex-direction: column; gap: 15px; height: auto !important; overflow: visible; }
             .pos-products { max-height: none; overflow: visible; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
             
-            /* Ép margin-bottom rất lớn cho giỏ hàng và các bảng để đẩy nổi bổng khỏi thanh menu */
             .pos-cart { 
                 position: static; width: 100%; height: auto; min-width: 0; 
                 box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-                margin-bottom: calc(160px + env(safe-area-inset-bottom)) !important;
+                margin-bottom: 20px;
             }
             .cart-items { max-height: 250px; }
 
@@ -260,11 +271,7 @@
             .stat-box .val { font-size: 1.4em; }
             .month-picker-container { width: 100%; justify-content: space-between; }
             
-            /* Ép khoảng trống đẩy lên cho các tab còn lại */
-            .manage-container, .table-container, .recipe-grid, .calendar-grid {
-                margin-bottom: calc(160px + env(safe-area-inset-bottom)) !important;
-            }
-            
+            /* Modal hiển thị giữa màn hình trên di động */
             .modal { align-items: center; padding: 15px; }
             .modal-content { width: 100% !important; max-height: 85vh; border-radius: 16px; padding: 20px !important; }
             #recipe-modal .modal-content { flex-direction: column; width: 100% !important; }
