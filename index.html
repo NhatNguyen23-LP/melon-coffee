@@ -74,6 +74,10 @@
         .product-card img { width: 75px; height: 75px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; }
         .product-card h3 { font-size: 0.95em; color: #333; margin-bottom: 5px; }
         
+        /* Hiệu ứng món tạm hết (màu xám, mờ) */
+        .product-card.sold-out { opacity: 0.5; filter: grayscale(1); background: #eee; }
+        .product-card.sold-out .btn-size { pointer-events: none; background: #ddd; color: #888; border-color: #ccc; }
+
         .size-btns { display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 5px;}
         .btn-size { flex: 1; padding: 6px 2px; border: 1px solid var(--cam-chinh); background: white; color: var(--cam-chinh); border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75em; }
         .btn-size:hover { background: var(--cam-nhat); }
@@ -99,11 +103,12 @@
         .img-preview-wrapper { width: 100px; height: 100px; border-radius: 8px; overflow: hidden; display: none; border: 2px solid var(--cam-chinh); }
         .img-preview-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
-        .manage-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; }
-        .manage-info { display: flex; align-items: center; gap: 12px; }
+        .manage-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; gap: 10px; }
+        .manage-info { display: flex; align-items: center; gap: 12px; flex: 1; }
         .manage-info img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover;}
         
         .btn-action { padding: 6px 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; font-size: 0.85em; }
+        .btn-edit { background: #17a2b8; color: white; }
         .btn-delete { background: #dc3545; color: white; }
         .btn-excel { background: #28a745; color: white; font-size: 0.95em; padding: 10px 15px; border-radius: 8px; border:none; cursor:pointer;}
 
@@ -138,7 +143,7 @@
         .cal-date { font-size: 0.75em; color: #888; font-weight: bold; }
         .cal-rev { color: var(--cam-chinh); font-weight: bold; font-size: 0.8em; text-align: right;}
 
-        /* --- MODAL CHUNG (LUÔN NỔI GIỮA MÀN HÌNH NHƯ TRÊN PC) --- */
+        /* --- MODAL CHUNG (LUÔN NỔI GIỮA MÀN HÌNH) --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 15px; }
         .modal-content { background: #fff; width: 500px; max-width: 100%; max-height: 85vh; border-radius: 12px; display: flex; overflow-y: auto; position: relative; flex-direction: column; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: scaleUp 0.25s ease;}
         @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -181,7 +186,6 @@
         @media (max-width: 850px) {
             body { flex-direction: column; height: 100vh; overflow: hidden; }
             
-            /* Đẩy menu dưới lên cao hơn để thoáng, tránh sát mép quá */
             .sidebar { 
                 position: fixed; bottom: 0; left: 0; width: 100% !important; 
                 height: calc(58px + env(safe-area-inset-bottom)); 
@@ -203,10 +207,8 @@
             .sidebar-menu li.active i { color: var(--cam-chinh) !important; }
             .sidebar-menu li span { display: block !important; font-size: 0.58em; font-weight: 600; white-space: nowrap; color: inherit; }
             
-            /* Sửa badge tròn đều, không bị kéo dãn */
             .badge { top: 2px; right: calc(50% - 18px); width: 16px; height: 16px; font-size: 0.55em; padding: 0; display: flex !important; align-items: center; justify-content: center; border-radius: 50%; }
 
-            /* Khung nội dung cách đáy cao hơn để nội dung cuối không bị menu che */
             .main-content { 
                 padding: 12px; padding-bottom: calc(75px + env(safe-area-inset-bottom)); height: 100vh; width: 100vw; overflow-y: auto; 
             }
@@ -225,7 +227,6 @@
             .stat-box .val { font-size: 1.2em; }
             .month-picker-container { width: 100%; justify-content: space-between; }
             
-            /* Modal nổi giữa màn hình trên di động */
             .modal { align-items: center; padding: 15px; }
             .modal-content { width: 100% !important; max-height: 80vh; border-radius: 12px; padding: 20px !important; }
             #recipe-modal .modal-content { flex-direction: column; width: 100% !important; }
@@ -309,6 +310,7 @@
             <div class="manage-container">
                 <div class="form-add">
                     <h3 id="form-title" style="margin-bottom: 15px; color: var(--cam-chinh);">Thêm Món Mới</h3>
+                    <input type="hidden" id="edit-product-id" value="">
                     <div class="form-group">
                         <label>Hình Ảnh Nước</label>
                         <div class="image-upload-box">
@@ -350,7 +352,10 @@
                         <label>Công thức pha chế (Mỗi bước 1 dòng)</label>
                         <textarea id="add-recipe" placeholder="Bước 1: Chuẩn bị...&#10;Bước 2: Ép lấy nước..."></textarea>
                     </div>
-                    <button class="btn-thanh-toan" id="btn-save-product" onclick="window.saveProduct()"><i class="fa-solid fa-check"></i> LƯU MÓN</button>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-thanh-toan" id="btn-save-product" onclick="window.saveProduct()"><i class="fa-solid fa-check"></i> LƯU MÓN</button>
+                        <button class="btn-thanh-toan" id="btn-cancel-edit" onclick="window.resetProductForm()" style="background: #888; display: none;">HỦY SỬA</button>
+                    </div>
                 </div>
 
                 <div class="manage-list">
@@ -545,7 +550,7 @@
             const ySelect = document.getElementById('stat-year-select');
             const now = new Date();
             for(let i=1; i<=12; i++) mSelect.innerHTML += `<option value="${i}">Tháng ${i}</option>`;
-            for(let i=2024; i<=2030; i++) ySelect.innerHTML += `<option value="${i}">Năm ${i}</option>`;
+            for(let i=2024; i<=2060; i++) ySelect.innerHTML += `<option value="${i}">Năm ${i}</option>`; // Mở rộng đến năm 2060
             mSelect.value = now.getMonth() + 1; ySelect.value = now.getFullYear();
         }
 
@@ -599,12 +604,19 @@
                 if(items.length > 0) {
                     container.innerHTML += `<div class="category-title">${CAT_NAMES[cat]}</div>`;
                     items.forEach(p => {
+                        const isSoldOut = p.soldOut ? 'sold-out' : '';
+                        const clickAction = p.soldOut ? '' : `onclick="window.addToCart('${p.id}', 'S', ${p.priceS})"`;
+                        const clickActionL = p.soldOut ? '' : `onclick="window.addToCart('${p.id}', 'L', ${p.priceL})"`;
+                        const soldOutBadge = p.soldOut ? '<div style="color:red; font-weight:bold; font-size:0.8em; margin-bottom:4px;">(TẠM HẾT)</div>' : '';
+
                         container.innerHTML += `
-                            <div class="product-card">
-                                <img src="${p.img}"><h3>${p.name}</h3>
+                            <div class="product-card ${isSoldOut}">
+                                <img src="${p.img}">
+                                <h3>${p.name}</h3>
+                                ${soldOutBadge}
                                 <div class="size-btns">
-                                    <button class="btn-size" onclick="window.addToCart('${p.id}', 'S', ${p.priceS})">Size S<br>${formatMoney(p.priceS)}</button>
-                                    <button class="btn-size" onclick="window.addToCart('${p.id}', 'L', ${p.priceL})">Size L<br>${formatMoney(p.priceL)}</button>
+                                    <button class="btn-size" ${clickAction}>Size S<br>${formatMoney(p.priceS)}</button>
+                                    <button class="btn-size" ${clickActionL}>Size L<br>${formatMoney(p.priceL)}</button>
                                 </div>
                             </div>
                         `;
@@ -615,6 +627,7 @@
 
         window.addToCart = function(id, size, price) {
             const product = products.find(p => p.id === id);
+            if(product && product.soldOut) return;
             const existing = cart.find(c => c.id === id && c.size === size);
             if(existing) existing.qty++; else cart.push({ id, name: product.name, size, price, qty: 1 });
             renderCart();
@@ -719,15 +732,71 @@
             const container = document.getElementById('render-manage-items');
             container.innerHTML = products.map(p => `
                 <div class="manage-item">
-                    <div class="manage-info"><img src="${p.img}"><div><b>${p.name}</b><br><span style="font-size:0.85em;color:#666;">S: ${formatMoney(p.priceS)} | L: ${formatMoney(p.priceL)}</span></div></div>
-                    <button class="btn-action btn-delete" onclick="window.deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                    <div class="manage-info">
+                        <img src="${p.img}">
+                        <div>
+                            <b>${p.name}</b> ${p.soldOut ? '<span style="color:red; font-size:0.8em;">(Tạm hết)</span>' : ''}<br>
+                            <span style="font-size:0.85em;color:#666;">S: ${formatMoney(p.priceS)} | L: ${formatMoney(p.priceL)}</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <label style="font-size: 0.8em; display:flex; align-items:center; gap:3px; cursor:pointer;" title="Tích để đánh dấu tạm hết món">
+                            <input type="checkbox" ${p.soldOut ? 'checked' : ''} onchange="window.toggleSoldOut('${p.id}', this.checked)"> Tạm hết
+                        </label>
+                        <button class="btn-action btn-edit" onclick="window.editProduct('${p.id}')"><i class="fa-solid fa-pen"></i> Sửa</button>
+                        <button class="btn-action btn-delete" onclick="window.deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                    </div>
                 </div>`).join('');
         }
+
+        window.toggleSoldOut = async function(id, isSoldOut) {
+            try {
+                await setDoc(doc(db, "melon_products", id), { soldOut: isSoldOut }, { merge: true });
+            } catch(e) {
+                alert("Lỗi cập nhật trạng thái món: " + e.message);
+            }
+        }
+
+        window.editProduct = function(id) {
+            const p = products.find(item => item.id === id);
+            if(!p) return;
+            document.getElementById('edit-product-id').value = p.id;
+            document.getElementById('add-name').value = p.name;
+            document.getElementById('add-price-s').value = p.priceS;
+            document.getElementById('add-price-l').value = p.priceL;
+            document.getElementById('add-recipe').value = p.recipe || '';
+            document.getElementById('add-category').value = p.category;
+            document.getElementById('add-image-base64').value = p.img;
+            document.getElementById('img-preview').src = p.img;
+            document.getElementById('img-preview-wrapper').style.display = 'block';
+            document.getElementById('upload-text').style.display = 'none';
+            document.getElementById('form-title').innerText = "Chỉnh Sửa Món Nước";
+            document.getElementById('btn-save-product').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> CẬP NHẬT`;
+            document.getElementById('btn-cancel-edit').style.display = 'flex';
+            document.getElementById('pane-manage').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.resetProductForm = function() {
+            document.getElementById('edit-product-id').value = '';
+            document.getElementById('add-name').value = '';
+            document.getElementById('add-price-s').value = '';
+            document.getElementById('add-price-l').value = '';
+            document.getElementById('add-recipe').value = '';
+            document.getElementById('add-image-base64').value = '';
+            document.getElementById('img-preview-wrapper').style.display = 'none';
+            document.getElementById('upload-text').style.display = 'block';
+            document.getElementById('form-title').innerText = "Thêm Món Mới";
+            document.getElementById('btn-save-product').innerHTML = `<i class="fa-solid fa-check"></i> LƯU MÓN`;
+            document.getElementById('btn-cancel-edit').style.display = 'none';
+        }
+
         function populateEditProductDropdown() {
             const select = document.getElementById('edit-add-product-id');
             select.innerHTML = products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
         }
+
         window.saveProduct = async function() {
+            const editId = document.getElementById('edit-product-id').value;
             const name = document.getElementById('add-name').value;
             const priceS = parseInt(document.getElementById('add-price-s').value);
             const priceL = parseInt(document.getElementById('add-price-l').value);
@@ -736,14 +805,22 @@
             const img = document.getElementById('add-image-base64').value || "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23FFF0E6'/><text y='65' x='10' font-size='70'>🍈</text></svg>";
 
             if(!name || !priceS || !priceL) return alert("Vui lòng điền đủ Tên và Giá!");
+            
             let productData = { category: cat, name, priceS, priceL, recipe, img };
 
             try {
-                await addDoc(collection(db, "melon_products"), productData);
-                alert("Đã đẩy món lên hệ thống Cloud thành công!");
-                document.getElementById('add-name').value = ''; document.getElementById('add-price-s').value = ''; document.getElementById('add-price-l').value = ''; document.getElementById('add-recipe').value = ''; document.getElementById('img-preview-wrapper').style.display = 'none'; document.getElementById('upload-text').style.display = 'block';
+                if(editId) {
+                    await setDoc(doc(db, "melon_products", editId), productData, { merge: true });
+                    alert("Đã cập nhật món thành công!");
+                } else {
+                    productData.soldOut = false;
+                    await addDoc(collection(db, "melon_products"), productData);
+                    alert("Đã thêm món mới thành công!");
+                }
+                window.resetProductForm();
             } catch (e) { alert("Lỗi khi lưu món: " + e.message); }
         }
+
         window.deleteProduct = async function(id) {
             if(confirm("Xóa vĩnh viễn món này khỏi Cloud?")) {
                 try { await deleteDoc(doc(db, "melon_products", id)); } 
@@ -751,7 +828,7 @@
             }
         }
 
-        function renderHistory() {
+        window.renderHistory = function() {
             const tbody = document.getElementById('render-history');
             tbody.innerHTML = '';
             [...bills].reverse().forEach(b => {
