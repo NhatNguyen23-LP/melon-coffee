@@ -271,7 +271,11 @@
             .stat-box .val { font-size: 1.4em; }
             .month-picker-container { width: 100%; justify-content: space-between; }
             
-            /* Modal hiển thị giữa màn hình trên di động */
+            /* Ép khoảng trống đẩy lên cho các tab còn lại */
+            .manage-container, .table-container, .recipe-grid, .calendar-grid {
+                margin-bottom: calc(160px + env(safe-area-inset-bottom)) !important;
+            }
+            
             .modal { align-items: center; padding: 15px; }
             .modal-content { width: 100% !important; max-height: 85vh; border-radius: 16px; padding: 20px !important; }
             #recipe-modal .modal-content { flex-direction: column; width: 100% !important; }
@@ -386,11 +390,11 @@
                     <div class="split-col">
                         <div class="form-group">
                             <label>Giá Size S (VNĐ)</label>
-                            <input type="number" id="add-price-s" placeholder="30000">
+                            <input type="text" inputmode="numeric" id="add-price-s" placeholder="30,000" oninput="window.formatCurrencyInput(this)">
                         </div>
                         <div class="form-group">
                             <label>Giá Size L (VNĐ)</label>
-                            <input type="number" id="add-price-l" placeholder="40000">
+                            <input type="text" inputmode="numeric" id="add-price-l" placeholder="40,000" oninput="window.formatCurrencyInput(this)">
                         </div>
                     </div>
                     <div class="form-group">
@@ -509,11 +513,11 @@
             <div class="split-col">
                 <div class="form-group">
                     <label>Giá Size S (VNĐ)</label>
-                    <input type="number" id="modal-edit-price-s">
+                    <input type="text" inputmode="numeric" id="modal-edit-price-s" oninput="window.formatCurrencyInput(this)">
                 </div>
                 <div class="form-group">
                     <label>Giá Size L (VNĐ)</label>
-                    <input type="number" id="modal-edit-price-l">
+                    <input type="text" inputmode="numeric" id="modal-edit-price-l" oninput="window.formatCurrencyInput(this)">
                 </div>
             </div>
             <div class="form-group">
@@ -619,6 +623,15 @@
         function getCustomDateString(d) { return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`; }
         function getCustomTimeString(d) { return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`; }
 
+        window.formatCurrencyInput = function(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value !== '') {
+                input.value = parseInt(value, 10).toLocaleString('en-US');
+            } else {
+                input.value = '';
+            }
+        }
+
         onSnapshot(collection(db, "melon_products"), (snapshot) => {
             products = [];
             snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
@@ -656,9 +669,7 @@
             if(el) el.classList.add('active');
         }
 
-        // Xử lý nén ảnh cho Form Thêm Mới
         window.previewImageFile = function(event) { processFile(event.target.files[0], 'add-image-base64', 'img-preview', 'img-preview-wrapper', 'upload-text'); }
-        // Xử lý nén ảnh cho Modal Sửa Món
         window.previewModalImageFile = function(event) { processFile(event.target.files[0], 'modal-edit-image-base64', 'modal-edit-img-preview', 'modal-edit-img-preview-wrapper', null); }
 
         function processFile(file, hiddenInputId, imgElementId, wrapperId, placeholderId) {
@@ -692,7 +703,6 @@
             const items = (e.clipboardData || e.originalEvent.clipboardData).items;
             for (let index in items) { 
                 if (items[index].kind === 'file') {
-                    // Mặc định paste ảnh vào form thêm mới
                     processFile(items[index].getAsFile(), 'add-image-base64', 'img-preview', 'img-preview-wrapper', 'upload-text');
                 }
             }
@@ -859,14 +869,13 @@
             }
         }
 
-        /* Gọi Modal popup lên để sửa thay vì form ở trên cùng */
         window.editProduct = function(id) {
             const p = products.find(item => item.id === id);
             if(!p) return;
             document.getElementById('modal-edit-product-id').value = p.id;
             document.getElementById('modal-edit-name').value = p.name;
-            document.getElementById('modal-edit-price-s').value = p.priceS;
-            document.getElementById('modal-edit-price-l').value = p.priceL;
+            document.getElementById('modal-edit-price-s').value = p.priceS ? p.priceS.toLocaleString('en-US') : '';
+            document.getElementById('modal-edit-price-l').value = p.priceL ? p.priceL.toLocaleString('en-US') : '';
             document.getElementById('modal-edit-recipe').value = p.recipe || '';
             document.getElementById('modal-edit-category').value = p.category;
             
@@ -883,13 +892,13 @@
         window.saveEditedProduct = async function() {
             const id = document.getElementById('modal-edit-product-id').value;
             const name = document.getElementById('modal-edit-name').value;
-            const priceS = parseInt(document.getElementById('modal-edit-price-s').value);
-            const priceL = parseInt(document.getElementById('modal-edit-price-l').value);
+            const priceS = parseInt(document.getElementById('modal-edit-price-s').value.replace(/[,.]/g, ''));
+            const priceL = parseInt(document.getElementById('modal-edit-price-l').value.replace(/[,.]/g, ''));
             const recipe = document.getElementById('modal-edit-recipe').value;
             const cat = document.getElementById('modal-edit-category').value;
             const img = document.getElementById('modal-edit-image-base64').value;
 
-            if(!name || !priceS || !priceL) return alert("Vui lòng điền đủ Tên và Giá!");
+            if(!name || isNaN(priceS) || isNaN(priceL)) return alert("Vui lòng điền đủ Tên và Giá!");
             
             let productData = { category: cat, name, priceS, priceL, recipe, img };
 
@@ -917,13 +926,13 @@
 
         window.saveNewProduct = async function() {
             const name = document.getElementById('add-name').value;
-            const priceS = parseInt(document.getElementById('add-price-s').value);
-            const priceL = parseInt(document.getElementById('add-price-l').value);
+            const priceS = parseInt(document.getElementById('add-price-s').value.replace(/[,.]/g, ''));
+            const priceL = parseInt(document.getElementById('add-price-l').value.replace(/[,.]/g, ''));
             const recipe = document.getElementById('add-recipe').value;
             const cat = document.getElementById('add-category').value;
             const img = document.getElementById('add-image-base64').value || "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23FFF0E6'/><text y='65' x='10' font-size='70'>🍈</text></svg>";
 
-            if(!name || !priceS || !priceL) return alert("Vui lòng điền đủ Tên và Giá!");
+            if(!name || isNaN(priceS) || isNaN(priceL)) return alert("Vui lòng điền đủ Tên và Giá!");
             
             let productData = { category: cat, name, priceS, priceL, recipe, img, soldOut: false };
 
@@ -1080,12 +1089,11 @@
             document.getElementById('stat-month').innerText = formatMoney(tMonth);
         }
 
-        // Tối ưu hàm xuất Excel chuẩn, hiển thị 1 dòng cho mỗi hóa đơn để dễ đọc
         window.exportExcelGlobal = function() {
             let csv = "Mã Bill,Ngày Giờ,Thu Ngân,Chi Tiết Món (Tên - Size - SL),Tổng Tiền\n";
             bills.forEach(b => {
                 let itemsStr = b.items.map(i => `${i.name}(${i.size})x${i.qty}`).join(" | ");
-                itemsStr = `"${itemsStr}"`; // Bọc chuỗi để Excel không tự cắt cột bằng dấu phẩy
+                itemsStr = `"${itemsStr}"`; 
                 csv += `${b.id.substring(0,6).toUpperCase()},${b.timeStr} ${b.dateStr},${b.cashier},${itemsStr},${b.total}\n`;
             });
             const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
