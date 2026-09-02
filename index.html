@@ -175,7 +175,7 @@
         .modal-info { flex: 6; padding: 20px; overflow-y: auto; }
         .recipe-steps { margin-top: 10px; list-style-type: decimal; padding-left: 18px; color: #444; line-height: 1.5; font-size: 0.9em;}
 
-        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        #toast-container { position: fixed; bottom: 85px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: var(--cam-chinh); color: white; padding: 12px 18px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 102, 0, 0.4);}
 
         #print-section { display: none; }
@@ -186,28 +186,30 @@
         @media (max-width: 850px) {
             body { flex-direction: column; height: 100vh; overflow: hidden; }
             
-            /* Đưa Sidebar thành Menu nằm dưới đáy (Bottom Bar) chuẩn App Mobile */
+            /* Đưa Sidebar thành Menu nằm dưới đáy, tự né thanh Home Indicator của iPhone */
             .sidebar { 
-                position: fixed; bottom: 0; left: 0; width: 100% !important; height: 65px; 
+                position: fixed; bottom: 0; left: 0; width: 100% !important; 
+                height: calc(60px + env(safe-area-inset-bottom)); 
+                padding-bottom: env(safe-area-inset-bottom);
                 flex-direction: row; border-top: 1px solid var(--vien); border-right: none; 
                 z-index: 999; background: var(--trang); box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             }
             .sidebar-header { display: none !important; } 
             .sidebar-menu { 
-                flex-direction: row; padding: 0; width: 100%; justify-content: space-around; align-items: center; 
+                flex-direction: row; padding: 0; width: 100%; justify-content: space-around; align-items: center; height: 60px;
             }
             .sidebar-menu li { 
-                flex: 1; flex-direction: column; gap: 2px; padding: 6px 0; 
+                flex: 1; flex-direction: column; gap: 2px; padding: 4px 0; 
                 background: transparent !important; color: #888; align-items: center; justify-content: center;
             }
-            .sidebar-menu li i { font-size: 1.2em; min-width: auto; }
+            .sidebar-menu li i { font-size: 1.1em; min-width: auto; }
             .sidebar-menu li.active { color: var(--cam-chinh) !important; background: transparent !important; }
-            .sidebar-menu li span { display: block !important; font-size: 0.65em; font-weight: bold; }
-            .badge { top: 2px; right: 15px; padding: 1px 5px; font-size: 0.65em; }
+            .sidebar-menu li span { display: block !important; font-size: 0.6em; font-weight: bold; }
+            .badge { top: 0px; right: 10px; padding: 1px 4px; font-size: 0.6em; }
 
-            /* Khung nội dung chính tràn toàn màn hình và chừa khoảng trống đáy cho Menu */
+            /* Khung nội dung chính tự cách đáy để không bị thanh menu che mất nội dung cuối */
             .main-content { 
-                padding: 12px; padding-bottom: 75px; height: 100vh; width: 100vw; overflow-y: auto; 
+                padding: 12px; padding-bottom: calc(75px + env(safe-area-inset-bottom)); height: 100vh; width: 100vw; overflow-y: auto; 
             }
             
             /* POS Layout: Xếp dọc sản phẩm trên, giỏ hàng bên dưới */
@@ -234,7 +236,7 @@
             .modal-img { padding: 10px; flex: none; }
             .modal-img img { max-width: 100px; }
             
-            #toast-container { bottom: 75px; left: 10px; right: 10px; }
+            #toast-container { bottom: calc(75px + env(safe-area-inset-bottom)); left: 10px; right: 10px; }
         }
 
         /* IN ẤN */
