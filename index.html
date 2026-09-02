@@ -10,11 +10,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Melon POS">
     
-    <!-- ĐÃ CẬP NHẬT: Thay đổi icon trình duyệt và ứng dụng trên màn hình chính sang "icon.png" -->
     <link rel="icon" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     
-    <!-- ĐÃ CẬP NHẬT: File Manifest cũng trỏ thẳng vào "icon.png" -->
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Melon%20Coffee%20POS%22%2C%22short_name%22%3A%22Melon%20POS%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFF0E6%22%2C%22theme_color%22%3A%22%23FF6600%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22icon.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -38,16 +36,14 @@
         .sidebar.collapsed { width: 80px; }
         .sidebar-header { padding: 20px 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--vien); height: 80px;}
         
-        /* ĐÃ CẬP NHẬT: Thay đổi logo SVG thành ảnh tĩnh "icon.png" cho nhất quán */
         .logo-title { display: flex; align-items: center; gap: 10px; color: var(--cam-chinh); font-size: 1.3em; font-weight: 800; white-space: nowrap; transition: opacity 0.3s; letter-spacing: 0.5px;}
         .sidebar.collapsed .logo-title { opacity: 0; width: 0; overflow: hidden; }
         .logo-img { width: 35px; height: 35px; object-fit: contain; flex-shrink: 0; border-radius: 8px;}
         
-        .custom-toggle { width: 40px; height: 40px; background-color: var(--cam-nhat); border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; cursor: pointer; transition: 0.2s; border: none; flex-shrink: 0;}
-        .custom-toggle span { display: block; height: 3px; background-color: var(--cam-chinh); border-radius: 2px; }
-        .custom-toggle span:nth-child(1) { width: 20px; }
-        .custom-toggle span:nth-child(2) { width: 20px; }
-        .custom-toggle span:nth-child(3) { width: 20px; }
+        /* ĐÃ CẬP NHẬT: Xóa nền màu cam nhạt, làm nút trong suốt hoàn toàn để ảnh không bị đóng khung xấu */
+        .custom-toggle { width: 40px; height: 40px; background-color: transparent; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; border: none; flex-shrink: 0; overflow: visible;}
+        .custom-toggle img { width: 28px; height: 28px; object-fit: contain; transition: 0.2s;}
+        .custom-toggle:hover img { transform: scale(1.1); }
 
         .sidebar-menu { list-style: none; padding: 15px 10px; display: flex; flex-direction: column; gap: 6px; }
         .sidebar-menu li { padding: 14px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: var(--xam-text); font-weight: 600; transition: all 0.2s ease; white-space: nowrap; position: relative;}
@@ -164,7 +160,7 @@
         .cal-date { font-size: 0.85em; color: #6B7280; font-weight: 700; }
         .cal-rev { color: var(--cam-chinh); font-weight: 800; font-size: 0.9em; text-align: right;}
 
-        /* --- MODAL CHUNG CỰC KỲ CHUYÊN NGHIỆP NỔI CHÍNH GIỮA --- */
+        /* --- MODAL CHUNG --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.7); z-index: 2000; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(4px); }
         .modal-content { background: #fff; width: 550px; max-width: 100%; max-height: 90vh; border-radius: 20px; display: flex; overflow-y: auto; position: relative; flex-direction: column; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
         @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -306,8 +302,9 @@
                 <img src="icon.png" alt="Melon Coffee" class="logo-img">
                 <span>MELON COFFEE</span>
             </div>
+            <!-- ĐÃ CẬP NHẬT: Xóa khung viền, chỉ để icon ảnh trần cho nút toggle -->
             <button class="custom-toggle" onclick="window.toggleSidebar()">
-                <span></span><span></span><span></span>
+                <img src="icon.png" alt="Menu" style="width: 28px; height: 28px; object-fit: contain;">
             </button>
         </div>
         <ul class="sidebar-menu">
