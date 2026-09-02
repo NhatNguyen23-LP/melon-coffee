@@ -415,7 +415,7 @@
         <div id="pane-history" class="tab-pane">
             <div class="header-actions">
                 <h1><i class="fa-solid fa-receipt"></i> Quản Lý Lịch Sử Bill</h1>
-                <button class="btn-action btn-excel" onclick="window.exportExcelGlobal()"><i class="fa-solid fa-file-excel"></i> Xuất CSV Giao Dịch</button>
+                <button class="btn-action btn-excel" onclick="window.exportBillHistoryCSV()"><i class="fa-solid fa-file-excel"></i> Xuất CSV Giao Dịch</button>
             </div>
             <div class="table-container">
                 <table>
@@ -444,7 +444,7 @@
         <div id="pane-stats" class="tab-pane">
             <div class="header-actions">
                 <h1><i class="fa-solid fa-chart-pie"></i> Báo Cáo Doanh Thu</h1>
-                <button class="btn-action btn-excel" onclick="window.exportExcelGlobal()"><i class="fa-solid fa-file-excel"></i> Xuất CSV Báo Cáo</button>
+                <button class="btn-action btn-excel" onclick="window.exportRevenueStatsCSV()"><i class="fa-solid fa-file-excel"></i> Xuất CSV Báo Cáo</button>
             </div>
             
             <div class="stats-summary">
@@ -1089,18 +1089,61 @@
             document.getElementById('stat-month').innerText = formatMoney(tMonth);
         }
 
-        window.exportExcelGlobal = function() {
-            let csv = "Mã Bill,Ngày Giờ,Thu Ngân,Chi Tiết Món (Tên - Size - SL),Tổng Tiền\n";
+        // Xuất File CSV Lịch Sử Bill (Định dạng: 1 dòng = 1 món)
+        window.exportBillHistoryCSV = function() {
+            let csv = "Ma Bill,Ngay Gio,Thu Ngan,Ten Thuc Uong,Size,So Luong,Don Gia,Tong Cong\n";
             bills.forEach(b => {
-                let itemsStr = b.items.map(i => `${i.name}(${i.size})x${i.qty}`).join(" | ");
-                itemsStr = `"${itemsStr}"`; 
-                csv += `${b.id.substring(0,6).toUpperCase()},${b.timeStr} ${b.dateStr},${b.cashier},${itemsStr},${b.total}\n`;
+                b.items.forEach(item => {
+                    csv += `${b.id.substring(0,6).toUpperCase()},${b.dateStr} ${b.timeStr},${b.cashier},${item.name},${item.size},${item.qty},${item.price},${item.price * item.qty}\n`;
+                });
             });
-            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+            downloadCSV(csv, "Lich_Su_Ban_Hang.csv");
+        }
+
+        // Xuất File CSV Báo Cáo Doanh Thu (Định dạng: Doanh thu theo từng ngày của tháng đang chọn)
+        window.exportRevenueStatsCSV = function() {
+            const year = parseInt(document.getElementById('stat-year-select').value);
+            const month = parseInt(document.getElementById('stat-month-select').value); 
+            
+            let csv = `Bao Cao Doanh Thu Thang ${month}/${year}\n`;
+            csv += "Ngay,So Luong Don,Tong Doanh Thu\n";
+            
+            let dailyData = {};
+            let totalRev = 0;
+            let totalBills = 0;
+
+            bills.forEach(b => {
+                let parts = b.dateStr.split('/');
+                let bMonth = parseInt(parts[1]);
+                let bYear = parseInt(parts[2]);
+
+                if (bMonth === month && bYear === year) {
+                    if(!dailyData[b.dateStr]) {
+                        dailyData[b.dateStr] = { count: 0, rev: 0 };
+                    }
+                    dailyData[b.dateStr].count += 1;
+                    dailyData[b.dateStr].rev += b.total;
+                    totalRev += b.total;
+                    totalBills += 1;
+                }
+            });
+
+            Object.keys(dailyData).forEach(date => {
+                csv += `${date},${dailyData[date].count},${dailyData[date].rev}\n`;
+            });
+
+            csv += `TONG CONG,${totalBills},${totalRev}\n`;
+            
+            downloadCSV(csv, `Bao_Cao_Doanh_Thu_T${month}_${year}.csv`);
+        }
+
+        // Hàm hỗ trợ tải file chung
+        function downloadCSV(csvContent, fileName) {
+            const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
             link.setAttribute("href", url);
-            link.setAttribute("download", "Doanh_Thu_Melon_Coffee.csv");
+            link.setAttribute("download", fileName);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
