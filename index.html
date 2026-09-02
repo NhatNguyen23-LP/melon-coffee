@@ -27,8 +27,10 @@
             --vien: #E5E7EB;
         }
 
+        /* Nâng cấp font chữ mượt mà và chuyên nghiệp hơn */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
         
+        /* Hỗ trợ chuẩn chiều cao 100dvh cho iOS Safari mới nhất */
         body { background-color: var(--xam-nhat); display: flex; height: 100vh; height: 100dvh; width: 100vw; overflow: hidden; }
 
         /* --- SPLASH SCREEN LOADING --- */
@@ -39,15 +41,25 @@
             transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
         }
         #splash-screen img {
-            width: 120px; height: 120px; object-fit: contain;
+            width: 120px; height: 120px; object-fit: contain; margin-bottom: 20px;
             animation: pulse-spin 1s ease-in-out infinite;
             filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
         }
+        .loading-text {
+            color: white; font-size: 1.1em; font-weight: 700; letter-spacing: 0.5px;
+            animation: pulse-text 1.5s ease-in-out infinite;
+        }
+        .loading-text span { animation: blink-dots 1.4s infinite both; }
+        .loading-text span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-text span:nth-child(3) { animation-delay: 0.4s; }
+
         @keyframes pulse-spin {
             0% { transform: scale(0.9) rotate(-5deg); }
             50% { transform: scale(1.1) rotate(5deg); }
             100% { transform: scale(0.9) rotate(-5deg); }
         }
+        @keyframes pulse-text { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        @keyframes blink-dots { 0% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: 0; } }
 
         /* --- SIDEBAR MẶC ĐỊNH (DESKTOP) --- */
         .sidebar { width: 260px; background-color: var(--trang); border-right: 1px solid var(--vien); display: flex; flex-direction: column; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; flex-shrink: 0; box-shadow: 2px 0 15px rgba(0,0,0,0.03); }
@@ -179,7 +191,7 @@
         .cal-date { font-size: 0.85em; color: #6B7280; font-weight: 700; }
         .cal-rev { color: var(--cam-chinh); font-weight: 800; font-size: 0.9em; text-align: right;}
 
-        /* --- MODAL CHUNG CỰC KỲ CHUYÊN NGHIỆP NỔI CHÍNH GIỮA --- */
+        /* --- MODAL CHUNG --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.7); z-index: 2000; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(4px); }
         .modal-content { background: #fff; width: 550px; max-width: 100%; max-height: 90vh; border-radius: 20px; display: flex; overflow-y: auto; position: relative; flex-direction: column; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
         @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -315,6 +327,7 @@
     <!-- Màn hình Loading -->
     <div id="splash-screen">
         <img src="icon.png" alt="Loading...">
+        <div class="loading-text">Đang tải hệ thống<span>.</span><span>.</span><span>.</span></div>
     </div>
 
     <div id="print-section"></div>
