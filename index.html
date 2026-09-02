@@ -5,21 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MELON COFFEE - POS CLOUD</title>
     
-    <!-- ========================================== -->
-    <!-- CÀI ĐẶT CHO MÀN HÌNH CHÍNH APP (iOS & ANDROID) -->
-    <!-- ========================================== -->
     <meta name="theme-color" content="#FF6600">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Melon POS">
     
-    <!-- Icon Tab Trình Duyệt -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍈</text></svg>">
-    
-    <!-- Icon App Màn Hình Chính (iOS) -->
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23FFF0E6'/><text y='72' x='12' font-size='75'>🍈</text></svg>">
-    
-    <!-- File Manifest App (Android) -->
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Melon%20Coffee%20POS%22%2C%22short_name%22%3A%22Melon%20POS%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFF0E6%22%2C%22theme_color%22%3A%22%23FF6600%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Crect%20width%3D'100'%20height%3D'100'%20fill%3D'%23FFF0E6'%2F%3E%3Ctext%20y%3D'72'%20x%3D'12'%20font-size%3D'75'%3E%F0%9F%8D%88%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,7 +22,7 @@
             --cam-nhat: #FFF0E6;
             --trang: #FFFFFF;
             --xam-nhat: #F8F9FA;
-            --xam-text: #666666;
+            --xam-text: #888888;
             --vien: #FFE0D0;
         }
 
@@ -196,16 +188,19 @@
             }
             .sidebar-header { display: none !important; } 
             .sidebar-menu { 
-                flex-direction: row; padding: 0; width: 100%; justify-content: space-around; align-items: center; height: 60px;
+                flex-direction: row; padding: 0 2px; width: 100%; justify-content: space-between; align-items: center; height: 60px;
             }
             .sidebar-menu li { 
-                flex: 1; flex-direction: column; gap: 2px; padding: 4px 0; 
-                background: transparent !important; color: #888; align-items: center; justify-content: center;
+                flex: 1; flex-direction: column; gap: 2px; padding: 4px 1px; 
+                background: transparent !important; color: var(--xam-text); align-items: center; justify-content: center;
+                text-align: center;
             }
-            .sidebar-menu li i { font-size: 1.1em; min-width: auto; }
+            /* Cố định kích thước icon và chữ cho vừa khít 6 mục */
+            .sidebar-menu li i { font-size: 1.05em; min-width: auto; color: var(--xam-text); }
             .sidebar-menu li.active { color: var(--cam-chinh) !important; background: transparent !important; }
-            .sidebar-menu li span { display: block !important; font-size: 0.6em; font-weight: bold; }
-            .badge { top: 0px; right: 10px; padding: 1px 4px; font-size: 0.6em; }
+            .sidebar-menu li.active i { color: var(--cam-chinh) !important; }
+            .sidebar-menu li span { display: block !important; font-size: 0.55em; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; color: inherit; }
+            .badge { top: 0px; right: 2px; padding: 1px 4px; font-size: 0.55em; }
 
             /* Khung nội dung chính tự cách đáy để không bị thanh menu che mất nội dung cuối */
             .main-content { 
@@ -278,10 +273,10 @@
                 <i class="fa-solid fa-bell"></i><span>Pha Chế</span>
                 <span class="badge" id="sidebar-badge">0</span>
             </li>
-            <li onclick="window.switchTab('history', this)"><i class="fa-solid fa-receipt"></i><span>Bill & Hóa Đơn</span></li>
+            <li onclick="window.switchTab('history', this)"><i class="fa-solid fa-receipt"></i><span>Hóa Đơn</span></li>
             <li onclick="window.switchTab('recipe', this)"><i class="fa-solid fa-blender"></i><span>Công Thức</span></li>
             <li onclick="window.switchTab('stats', this)"><i class="fa-solid fa-chart-pie"></i><span>Thống Kê</span></li>
-            <li onclick="window.switchTab('manage', this)"><i class="fa-solid fa-square-plus"></i><span>Quản Lý Món</span></li>
+            <li onclick="window.switchTab('manage', this)"><i class="fa-solid fa-square-plus"></i><span>Quản Lý</span></li>
         </ul>
     </div>
 
@@ -560,6 +555,8 @@
         initMonthYearPickers();
         
         window.toggleSidebar = function() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+        
+        // Sửa lại hàm switchTab để giữ nguyên màu sắc & icon của các mục được chọn
         window.switchTab = function(tabId, el) {
             document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
