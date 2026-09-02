@@ -27,10 +27,8 @@
             --vien: #E5E7EB;
         }
 
-        /* Nâng cấp font chữ mượt mà và chuyên nghiệp hơn */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* Hỗ trợ chuẩn chiều cao 100dvh cho iOS Safari mới nhất */
         body { background-color: var(--xam-nhat); display: flex; height: 100vh; height: 100dvh; width: 100vw; overflow: hidden; }
 
         /* --- SPLASH SCREEN LOADING --- */
@@ -61,7 +59,7 @@
         @keyframes pulse-text { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
         @keyframes blink-dots { 0% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: 0; } }
 
-        /* --- SIDEBAR MẶC ĐỊNH (DESKTOP) --- */
+        /* --- SIDEBAR --- */
         .sidebar { width: 260px; background-color: var(--trang); border-right: 1px solid var(--vien); display: flex; flex-direction: column; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; flex-shrink: 0; box-shadow: 2px 0 15px rgba(0,0,0,0.03); }
         .sidebar.collapsed { width: 80px; }
         .sidebar-header { padding: 20px 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--vien); height: 80px;}
@@ -233,9 +231,6 @@
 
         #print-section { display: none; }
 
-        /* ========================================================== */
-        /* MOBILE & TABLET OPTIMIZATION (ĐIỆN THOẠI & IPAD)           */
-        /* ========================================================== */
         @media (max-width: 850px) {
             body { flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
             
@@ -324,7 +319,6 @@
 </head>
 <body>
 
-    <!-- Màn hình Loading -->
     <div id="splash-screen">
         <img src="icon.png" alt="Loading...">
         <div class="loading-text">Đang tải hệ thống<span>.</span><span>.</span><span>.</span></div>
@@ -332,7 +326,6 @@
 
     <div id="print-section"></div>
 
-    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-title">
@@ -356,10 +349,8 @@
         </ul>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="main-content" id="main-scroll">
 
-        <!-- 1. BÁN HÀNG -->
         <div id="pane-menu" class="tab-pane active">
             <div class="header-top">
                 <h1><i class="fa-solid fa-store"></i> POS Thu Ngân</h1>
@@ -379,7 +370,6 @@
             </div>
         </div>
 
-        <!-- 2. QUẢN LÝ MÓN -->
         <div id="pane-manage" class="tab-pane">
             <div class="header-top"><h1><i class="fa-solid fa-square-plus"></i> Quản Lý Món Nước</h1></div>
             <div class="manage-container">
@@ -437,7 +427,6 @@
             </div>
         </div>
 
-        <!-- 3. LỊCH SỬ BILL -->
         <div id="pane-history" class="tab-pane">
             <div class="header-actions">
                 <h1><i class="fa-solid fa-receipt"></i> Quản Lý Lịch Sử Bill</h1>
@@ -460,13 +449,11 @@
             </div>
         </div>
         
-        <!-- CÔNG THỨC PHA CHẾ -->
         <div id="pane-recipe" class="tab-pane">
             <div class="header-top"><h1><i class="fa-solid fa-blender"></i> Sổ Tay Pha Chế</h1></div>
             <div class="recipe-grid" id="render-recipes"></div>
         </div>
 
-        <!-- 4. THỐNG KÊ -->
         <div id="pane-stats" class="tab-pane">
             <div class="header-actions">
                 <h1><i class="fa-solid fa-chart-pie"></i> Báo Cáo Doanh Thu</h1>
@@ -505,7 +492,6 @@
         </div>
     </div>
 
-    <!-- MODAL SỬA MÓN (CHUYÊN NGHIỆP GIỮA MÀN HÌNH) -->
     <div class="modal" id="edit-product-modal">
         <div class="modal-content">
             <span class="close-btn" onclick="window.closeEditProductModal()">&times;</span>
@@ -555,7 +541,6 @@
         </div>
     </div>
 
-    <!-- MODAL BẾP -->
     <div class="modal" id="kitchen-modal">
         <div class="modal-content" style="width: 450px;">
             <span class="close-btn" onclick="window.closeKitchenModal()">&times;</span>
@@ -564,7 +549,6 @@
         </div>
     </div>
 
-    <!-- MODAL PREVIEW XEM TRƯỚC BILL -->
     <div class="modal" id="preview-bill-modal">
         <div class="modal-content" style="align-items: center;">
             <span class="close-btn" onclick="window.closePreviewModal()">&times;</span>
@@ -578,7 +562,6 @@
         </div>
     </div>
 
-    <!-- MODAL SỬA BILL -->
     <div class="modal" id="edit-bill-modal">
         <div class="modal-content">
             <span class="close-btn" onclick="window.closeEditBillModal()">&times;</span>
@@ -603,7 +586,6 @@
         </div>
     </div>
     
-    <!-- MODAL CÔNG THỨC CHI TIẾT -->
     <div class="modal" id="recipe-modal">
         <div class="modal-content">
             <span class="close-btn" onclick="window.closeRecipeModal()">&times;</span>
@@ -658,7 +640,6 @@
             }
         }
 
-        // Tự động tắt Splash Screen sau 1 giây
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -1124,48 +1105,39 @@
             document.getElementById('stat-month').innerText = formatMoney(tMonth);
         }
 
-        // Xuất File CSV Lịch Sử Bill (Định dạng: 1 dòng = 1 món)
+        // ==========================================================
+        // XUẤT CSV 1: LỊCH SỬ BÁN HÀNG (Thu ngân chỉ in 1 ô đầu tiên mỗi bill)
+        // ==========================================================
         window.exportBillHistoryCSV = function() {
-            let csv = "Ma Bill,Ngay Gio,Thu Ngan,Ten Thuc Uong,Size,So Luong,Don Gia,Tong Cong\n";
-            bills.forEach(b => {
-                b.items.forEach(item => {
-                    csv += `${b.id.substring(0,6).toUpperCase()},${b.dateStr} ${b.timeStr},${b.cashier},${item.name},${item.size},${item.qty},${item.price},${item.price * item.qty}\n`;
-                });
-            });
-            downloadCSV(csv, "Lich_Su_Ban_Hang.csv");
-        }
-
-        // Xuất File CSV Lịch Sử Bill
-        window.exportBillHistoryCSV = function() {
-            // Bọc ngoặc kép các header để chốt chuẩn định dạng mảng
             let csv = `"Ma Bill","Ngay Gio","Thu Ngan","Ten Thuc Uong","Size","So Luong","Don Gia","Tong Cong"\n`;
             
             bills.forEach(b => {
-                b.items.forEach(item => {
-                    // Xử lý format ngày (bỏ số 0 đứng trước để ra 3/9/2026 thay vì 03/09/2026)
-                    let dateParts = b.dateStr.split('/');
-                    let cleanDate = `${parseInt(dateParts[0])}/${parseInt(dateParts[1])}/${dateParts[2]}`;
-                    let dateTime = `${cleanDate} ${b.timeStr}`;
+                let dateParts = b.dateStr.split('/');
+                let cleanDate = `${parseInt(dateParts[0])}/${parseInt(dateParts[1])}/${dateParts[2]}`;
+                let dateTime = `${cleanDate} ${b.timeStr}`;
+                
+                b.items.forEach((item, index) => {
+                    // Dòng đầu tiên của bill thì ghi tên thu ngân, các dòng món tiếp theo trong cùng bill để trống
+                    let cashierCol = (index === 0) ? b.cashier : "";
                     
-                    // Bọc ngoặc kép cho text để các món như "Bơ xay, dừa giòn" không bị nhảy cột
-                    csv += `"${b.id.substring(0,6).toUpperCase()}","${dateTime}","${b.cashier}","${item.name}","${item.size}",${item.qty},${item.price},${item.price * item.qty}\n`;
+                    csv += `"${b.id.substring(0,6).toUpperCase()}","${dateTime}","${cashierCol}","${item.name}","${item.size}",${item.qty},${item.price},${item.price * item.qty}\n`;
                 });
             });
             downloadCSV(csv, "Lich_Su_Ban_Hang.csv");
         }
 
-        // Xuất File CSV Báo Cáo Doanh Thu
+        // ==========================================================
+        // XUẤT CSV 2: TỔNG DOANH THU THÁNG (Bảng kê chi tiết món + Tổng tiền)
+        // ==========================================================
         window.exportRevenueStatsCSV = function() {
             const year = parseInt(document.getElementById('stat-year-select').value);
             const month = parseInt(document.getElementById('stat-month-select').value); 
             
-            // Dòng tiêu đề chốt ở ô A1, B1 và C1 để trống cho đúng layout
-            let csv = `"Bao Cao Doanh Thu Thang ${month}/${year}","",""\n`;
-            csv += `"Ngay","So Luong Don","Tong Doanh Thu"\n`;
+            let csv = `"Bao Cao Doanh Thu Thang ${month}/${year}","","","",""\n`;
+            csv += `"Ten Thuc Uong","Size","So Luong","Don Gia","Tong Tien"\n`;
             
-            let dailyData = {};
-            let totalRev = 0;
-            let totalBills = 0;
+            let productSummary = {};
+            let grandTotal = 0;
 
             bills.forEach(b => {
                 let parts = b.dateStr.split('/');
@@ -1173,31 +1145,35 @@
                 let bYear = parseInt(parts[2]);
 
                 if (bMonth === month && bYear === year) {
-                    let displayDate = `${parseInt(parts[0])}/${bMonth}/${bYear}`;
-                    if(!dailyData[displayDate]) {
-                        dailyData[displayDate] = { count: 0, rev: 0 };
-                    }
-                    dailyData[displayDate].count += 1;
-                    dailyData[displayDate].rev += b.total;
-                    totalRev += b.total;
-                    totalBills += 1;
+                    b.items.forEach(item => {
+                        let key = `${item.name}_${item.size}_${item.price}`;
+                        if(!productSummary[key]) {
+                            productSummary[key] = {
+                                name: item.name,
+                                size: item.size,
+                                price: item.price,
+                                qty: 0,
+                                total: 0
+                            };
+                        }
+                        productSummary[key].qty += item.qty;
+                        productSummary[key].total += (item.price * item.qty);
+                        grandTotal += (item.price * item.qty);
+                    });
                 }
             });
 
-            // Sắp xếp ngày từ mùng 1 đến cuối tháng để báo cáo gọn gàng
-            let sortedDates = Object.keys(dailyData).sort((a, b) => {
-                return parseInt(a.split('/')[0]) - parseInt(b.split('/')[0]);
+            // Ghi danh sách từng món nước bán được trong tháng
+            Object.values(productSummary).forEach(p => {
+                csv += `"${p.name}","${p.size}",${p.qty},${p.price},${p.total}\n`;
             });
 
-            sortedDates.forEach(date => {
-                csv += `"${date}",${dailyData[date].count},${dailyData[date].rev}\n`;
-            });
-
-            csv += `"TONG CONG",${totalBills},${totalRev}\n`;
+            // Dòng tổng doanh thu cộng dồn toàn bộ cột tổng tiền ở dưới cùng
+            csv += `"TONG DOANH THU","","","",${grandTotal}\n`;
             
             downloadCSV(csv, `Bao_Cao_Doanh_Thu_T${month}_${year}.csv`);
         }
-        // Hàm hỗ trợ tải file chung
+
         function downloadCSV(csvContent, fileName) {
             const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
