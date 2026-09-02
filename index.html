@@ -1135,13 +1135,33 @@
             downloadCSV(csv, "Lich_Su_Ban_Hang.csv");
         }
 
-        // Xuất File CSV Báo Cáo Doanh Thu (Định dạng: Doanh thu theo từng ngày của tháng đang chọn)
+        // Xuất File CSV Lịch Sử Bill
+        window.exportBillHistoryCSV = function() {
+            // Bọc ngoặc kép các header để chốt chuẩn định dạng mảng
+            let csv = `"Ma Bill","Ngay Gio","Thu Ngan","Ten Thuc Uong","Size","So Luong","Don Gia","Tong Cong"\n`;
+            
+            bills.forEach(b => {
+                b.items.forEach(item => {
+                    // Xử lý format ngày (bỏ số 0 đứng trước để ra 3/9/2026 thay vì 03/09/2026)
+                    let dateParts = b.dateStr.split('/');
+                    let cleanDate = `${parseInt(dateParts[0])}/${parseInt(dateParts[1])}/${dateParts[2]}`;
+                    let dateTime = `${cleanDate} ${b.timeStr}`;
+                    
+                    // Bọc ngoặc kép cho text để các món như "Bơ xay, dừa giòn" không bị nhảy cột
+                    csv += `"${b.id.substring(0,6).toUpperCase()}","${dateTime}","${b.cashier}","${item.name}","${item.size}",${item.qty},${item.price},${item.price * item.qty}\n`;
+                });
+            });
+            downloadCSV(csv, "Lich_Su_Ban_Hang.csv");
+        }
+
+        // Xuất File CSV Báo Cáo Doanh Thu
         window.exportRevenueStatsCSV = function() {
             const year = parseInt(document.getElementById('stat-year-select').value);
             const month = parseInt(document.getElementById('stat-month-select').value); 
             
-            let csv = `Bao Cao Doanh Thu Thang ${month}/${year}\n`;
-            csv += "Ngay,So Luong Don,Tong Doanh Thu\n";
+            // Dòng tiêu đề chốt ở ô A1, B1 và C1 để trống cho đúng layout
+            let csv = `"Bao Cao Doanh Thu Thang ${month}/${year}","",""\n`;
+            csv += `"Ngay","So Luong Don","Tong Doanh Thu"\n`;
             
             let dailyData = {};
             let totalRev = 0;
@@ -1153,25 +1173,30 @@
                 let bYear = parseInt(parts[2]);
 
                 if (bMonth === month && bYear === year) {
-                    if(!dailyData[b.dateStr]) {
-                        dailyData[b.dateStr] = { count: 0, rev: 0 };
+                    let displayDate = `${parseInt(parts[0])}/${bMonth}/${bYear}`;
+                    if(!dailyData[displayDate]) {
+                        dailyData[displayDate] = { count: 0, rev: 0 };
                     }
-                    dailyData[b.dateStr].count += 1;
-                    dailyData[b.dateStr].rev += b.total;
+                    dailyData[displayDate].count += 1;
+                    dailyData[displayDate].rev += b.total;
                     totalRev += b.total;
                     totalBills += 1;
                 }
             });
 
-            Object.keys(dailyData).forEach(date => {
-                csv += `${date},${dailyData[date].count},${dailyData[date].rev}\n`;
+            // Sắp xếp ngày từ mùng 1 đến cuối tháng để báo cáo gọn gàng
+            let sortedDates = Object.keys(dailyData).sort((a, b) => {
+                return parseInt(a.split('/')[0]) - parseInt(b.split('/')[0]);
             });
 
-            csv += `TONG CONG,${totalBills},${totalRev}\n`;
+            sortedDates.forEach(date => {
+                csv += `"${date}",${dailyData[date].count},${dailyData[date].rev}\n`;
+            });
+
+            csv += `"TONG CONG",${totalBills},${totalRev}\n`;
             
             downloadCSV(csv, `Bao_Cao_Doanh_Thu_T${month}_${year}.csv`);
         }
-
         // Hàm hỗ trợ tải file chung
         function downloadCSV(csvContent, fileName) {
             const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
