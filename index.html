@@ -27,8 +27,10 @@
             --vien: #E5E7EB;
         }
 
+        /* Nâng cấp font chữ mượt mà và chuyên nghiệp hơn */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
         
+        /* Hỗ trợ chuẩn chiều cao 100dvh cho iOS Safari mới nhất */
         body { background-color: var(--xam-nhat); display: flex; height: 100vh; height: 100dvh; width: 100vw; overflow: hidden; }
 
         /* --- SIDEBAR MẶC ĐỊNH (DESKTOP) --- */
@@ -40,11 +42,12 @@
         .sidebar.collapsed .logo-title { opacity: 0; width: 0; overflow: hidden; }
         .logo-img { width: 35px; height: 35px; object-fit: contain; flex-shrink: 0; border-radius: 8px;}
         
-        /* ĐÃ CẬP NHẬT: Thay đổi giao diện nút Toggle sang dùng icon hình ảnh */
-        .custom-toggle { width: 40px; height: 40px; background-color: var(--cam-nhat); border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; border: none; flex-shrink: 0; overflow: hidden;}
-        .custom-toggle img { width: 24px; height: 24px; object-fit: contain; transition: 0.2s;}
-        .custom-toggle:hover { background-color: #FFE0D0; }
-        .custom-toggle:hover img { transform: scale(1.1); }
+        /* ĐÃ CẬP NHẬT: Nút mũi tên màu cam, hoàn toàn không viền, không nền */
+        .custom-toggle { width: 40px; height: 40px; background: transparent; display: flex; justify-content: center; align-items: center; cursor: pointer; border: none; outline: none; flex-shrink: 0;}
+        .custom-toggle i { font-size: 1.5em; color: var(--cam-chinh); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar.collapsed .custom-toggle i { transform: rotate(180deg); }
+        .custom-toggle:hover i { transform: scale(1.2); }
+        .sidebar.collapsed .custom-toggle:hover i { transform: rotate(180deg) scale(1.2); }
 
         .sidebar-menu { list-style: none; padding: 15px 10px; display: flex; flex-direction: column; gap: 6px; }
         .sidebar-menu li { padding: 14px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: var(--xam-text); font-weight: 600; transition: all 0.2s ease; white-space: nowrap; position: relative;}
@@ -303,8 +306,9 @@
                 <img src="icon.png" alt="Melon Coffee" class="logo-img">
                 <span>MELON COFFEE</span>
             </div>
+            <!-- ĐÃ CẬP NHẬT: Nút mũi tên màu cam, tự động xoay khi đóng/mở sidebar, không viền không nền -->
             <button class="custom-toggle" onclick="window.toggleSidebar()">
-                <img src="icon.png" alt="Menu" style="width: 24px; height: 24px; object-fit: contain;">
+                <i class="fa-solid fa-chevron-left"></i>
             </button>
         </div>
         <ul class="sidebar-menu">
