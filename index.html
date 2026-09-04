@@ -232,13 +232,20 @@
         #print-section { display: none; }
 
         /* ========================================================== */
-        /* CHẾ ĐỘ DÀNH RIÊNG CHO KHÁCH QUÉT QR (?mode=khach)          */
+        /* 1. MÁY CHỦ: ẨN GIỎ HÀNG, MENU RỘNG 100% TOÀN MÀN HÌNH     */
+        /* ========================================================== */
+        body:not(.customer-mode) .pos-cart { display: none !important; }
+        body:not(.customer-mode) .pos-products { flex: 1 1 100% !important; max-width: 100% !important; }
+
+        /* ========================================================== */
+        /* 2. KHÁCH QUÉT QR (?mode=khach): ẨN MENU TRÁI, ẨN THU NGÂN  */
         /* ========================================================== */
         body.customer-mode .sidebar { display: none !important; }
         body.customer-mode .btn-kitchen-top { display: none !important; }
         body.customer-mode .main-content { padding: 15px !important; }
         body.customer-mode #sidebar-badge { display: none !important; }
         body.customer-mode .tab-pane::after { display: none !important; }
+        body.customer-mode .cashier-input { display: none !important; }
         body.customer-mode .btn-thanh-toan { background: #10B981 !important; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important; }
         body.customer-mode .btn-thanh-toan:hover { background: #059669 !important; }
 
@@ -364,7 +371,7 @@
 
         <div id="pane-menu" class="tab-pane active">
             <div class="header-top">
-                <h1><i class="fa-solid fa-store"></i> POS Thu Ngân</h1>
+                <h1><i class="fa-solid fa-store"></i> Menu Quán</h1>
                 <button class="btn-kitchen-top" onclick="window.openKitchenModal()">
                     <i class="fa-regular fa-bell"></i> Pha Chế (<span id="top-badge">0</span>)
                 </button>
@@ -372,11 +379,11 @@
             <div class="pos-layout">
                 <div class="pos-products" id="render-products"></div>
                 <div class="pos-cart">
-                    <input type="text" class="cashier-input" id="cashier-name" placeholder="Tên thu ngân (VD: Yến Nhi)">
-                    <h3 style="color: var(--cam-chinh); margin-bottom: 10px; font-size: 1.1em; font-weight: 800;">Giỏ hàng hiện tại</h3>
+                    <input type="text" class="cashier-input" id="cashier-name">
+                    <h3 style="color: var(--cam-chinh); margin-bottom: 10px; font-size: 1.1em; font-weight: 800;">Giỏ hàng của bạn</h3>
                     <div class="cart-items" id="render-cart"></div>
                     <div class="cart-total">Tổng: <span id="cart-total-val" style="color: var(--cam-chinh);">0đ</span></div>
-                    <button class="btn-thanh-toan" onclick="window.checkout()"><i class="fa-solid fa-print"></i> THANH TOÁN QUẦY</button>
+                    <button class="btn-thanh-toan" onclick="window.checkout()"><i class="fa-solid fa-paper-plane"></i> GỬI YÊU CẦU GỌI MÓN</button>
                 </div>
             </div>
         </div>
@@ -449,7 +456,7 @@
                         <tr>
                             <th>Mã Bill</th>
                             <th>Ngày Giờ</th>
-                            <th>Thu Ngân</th>
+                            <th>Người Đặt</th>
                             <th>Chi Tiết Món</th>
                             <th>Tổng Tiền</th>
                             <th style="text-align: center;">Thao Tác</th>
@@ -651,7 +658,7 @@
             }
         }
 
-        // Tự động kiểm tra nếu vào bằng link có ?mode=khach
+        // Tự động nhận diện chế độ khách qua link ?mode=khach
         const urlParams = new URLSearchParams(window.location.search);
         const isCustomerMode = urlParams.get('mode') === 'khach';
 
@@ -664,12 +671,8 @@
 
             if (isCustomerMode) {
                 document.body.classList.add('customer-mode');
-                const cashierInput = document.getElementById('cashier-name');
-                if (cashierInput) cashierInput.placeholder = "Nhập số bàn của bạn (VD: Bàn 03)";
                 const titleEl = document.querySelector('#pane-menu h1');
                 if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-mug-hot"></i> Menu Melon Coffee';
-                const checkoutBtn = document.querySelector('.btn-thanh-toan');
-                if (checkoutBtn) checkoutBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> GỬI YÊU CẦU GỌI MÓN';
             }
         });
 
@@ -779,6 +782,9 @@
         }
 
         window.addToCart = function(id, size, price) {
+            // Máy chủ chỉ để xem và quản lý, không kích hoạt giỏ hàng
+            if (!isCustomerMode) return;
+
             const product = products.find(p => p.id === id);
             if(product && product.soldOut) return;
             const existing = cart.find(c => c.id === id && c.size === size);
@@ -804,11 +810,6 @@
 
         window.checkout = async function() {
             if(cart.length === 0) return alert("Giỏ hàng đang trống!");
-            
-            const cashierInputVal = document.getElementById('cashier-name').value.trim();
-            if (isCustomerMode && !cashierInputVal) {
-                return alert("Vui lòng nhập số bàn hoặc tên của bạn trước khi gửi đơn!");
-            }
 
             const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             const now = new Date();
@@ -816,23 +817,17 @@
                 dateStr: getCustomDateString(now), 
                 timeStr: getCustomTimeString(now), 
                 dateObj: now.getTime(), 
-                cashier: cashierInputVal || "Thu ngân", 
+                cashier: "Khách QR", 
                 items: [...cart], 
                 total: total, 
                 status: "pending" 
             };
             
             try {
-                const docRef = await addDoc(collection(db, "melon_bills"), bill);
-                if (!isCustomerMode) window.showKitchenToast(docRef.id);
+                await addDoc(collection(db, "melon_bills"), bill);
                 cart = []; renderCart(); 
-                
-                if (isCustomerMode) {
-                    alert("Gửi yêu cầu gọi món thành công! Quán đang pha chế cho bạn nhé.");
-                } else {
-                    alert("Thanh toán thành công! Đơn đã đồng bộ lên Cloud.");
-                }
-            } catch(e) { alert("Lỗi khi lưu đơn hàng lên cloud: " + e.message); }
+                alert("Gửi yêu cầu gọi món thành công! Quán đang pha chế cho bạn nhé.");
+            } catch(e) { alert("Lỗi khi gửi đơn: " + e.message); }
         }
 
         function updateKitchenBadge() {
@@ -1042,7 +1037,7 @@
                 <div style="border-bottom: 1px dashed #9CA3AF; margin-bottom: 15px;"></div>
                 <p style="margin: 4px 0;"><b>Mã HĐ:</b> ${bill.id.substring(0,6).toUpperCase()}</p>
                 <p style="margin: 4px 0;"><b>Ngày:</b> ${bill.timeStr} - ${bill.dateStr}</p>
-                <p style="margin: 4px 0;"><b>Thu ngân / Bàn:</b> ${bill.cashier}</p>
+                <p style="margin: 4px 0;"><b>Người đặt:</b> ${bill.cashier}</p>
                 <div style="border-bottom: 1px dashed #9CA3AF; margin: 15px 0;"></div>
                 <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 8px;"><div style="flex: 2;">Tên món</div><div style="flex: 1; text-align: center;">SL</div><div style="flex: 1; text-align: right;">TT</div></div>
                 ${itemsHtml}
@@ -1153,7 +1148,7 @@
 
         // Xuất File CSV Lịch Sử Bill
         window.exportBillHistoryCSV = function() {
-            let csv = `"Ma Bill","Ngay Gio","Thu Ngan","Ten Thuc Uong","Size","So Luong","Don Gia","Tong Cong"\n`;
+            let csv = `"Ma Bill","Ngay Gio","Nguoi Dat","Ten Thuc Uong","Size","So Luong","Don Gia","Tong Cong"\n`;
             
             bills.forEach(b => {
                 let dateParts = b.dateStr.split('/');
