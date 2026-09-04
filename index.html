@@ -443,9 +443,12 @@
         </div>
 
         <div id="pane-history" class="tab-pane">
-            <div class="header-actions">
-                <h1><i class="fa-solid fa-receipt"></i> Quản Lý Lịch Sử Bill</h1>
-                <button class="btn-action btn-excel" onclick="window.exportBillHistoryCSV()"><i class="fa-solid fa-file-excel"></i> Xuất CSV Giao Dịch</button>
+            <div class="header-actions" style="flex-wrap: wrap; gap: 15px;">
+                <h1><i class="fa-solid fa-receipt"></i> Lịch Sử Bill</h1>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="date" id="history-export-date" style="padding: 10px 15px; border: 1px solid var(--vien); border-radius: 10px; font-weight: 700; color: #4B5563; background: white; outline: none;">
+                    <button class="btn-action btn-excel" onclick="window.exportBillHistoryCSV()"><i class="fa-solid fa-file-excel"></i> Tải CSV Ngày Chọn</button>
+                </div>
             </div>
             <div class="table-container">
                 <table>
@@ -701,6 +704,13 @@
             for(let i=1; i<=12; i++) mSelect.innerHTML += `<option value="${i}">Tháng ${i}</option>`;
             for(let i=2024; i<=2060; i++) ySelect.innerHTML += `<option value="${i}">Năm ${i}</option>`;
             mSelect.value = now.getMonth() + 1; ySelect.value = now.getFullYear();
+            
+            // Khởi tạo ngày hôm nay cho ô tải Lịch sử Bill
+            const historyDateInput = document.getElementById('history-export-date');
+            if(historyDateInput) {
+                const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+                historyDateInput.value = todayStr;
+            }
         }
 
         initMonthYearPickers();
@@ -1014,7 +1024,7 @@
             }
         }
 
-        // --- CẬP NHẬT LỊCH SỬ BILL CÓ NGĂN CÁCH THEO NGÀY ---
+        // --- LỊCH SỬ BILL HIỂN THỊ CÓ NGĂN CÁCH ---
         window.renderHistory = function() {
             const tbody = document.getElementById('render-history');
             tbody.innerHTML = '';
@@ -1167,12 +1177,27 @@
             document.getElementById('stat-month').innerText = formatMoney(tMonth);
         }
 
-        // --- CẬP NHẬT CSV LỊCH SỬ BILL CÓ TỔNG SỐ LY ---
+        // --- CẬP NHẬT CSV LỊCH SỬ BILL: CHỈ TẢI NGÀY ĐƯỢC CHỌN + TỔNG LY, TỔNG TIỀN ---
         window.exportBillHistoryCSV = function() {
+            const dateInput = document.getElementById('history-export-date').value;
+            if (!dateInput) return alert("Vui lòng chọn ngày để xuất file!");
+
+            // Đổi từ format input date YYYY-MM-DD sang format của app DD/MM/YYYY
+            const parts = dateInput.split('-');
+            const targetDateStr = `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+            // Lọc ra các bill chỉ nằm trong ngày đó
+            const filteredBills = bills.filter(b => b.dateStr === targetDateStr);
+            
+            if (filteredBills.length === 0) {
+                return alert(`Không có hóa đơn nào được bán trong ngày ${targetDateStr}`);
+            }
+
             let csv = `"Ma Bill","Ngay Gio","Thu Ngan","Ten Thuc Uong","Size","So Luong","Don Gia","Tong Cong"\n`;
             let totalCups = 0; 
+            let dailyTotalMoney = 0;
             
-            bills.forEach(b => {
+            filteredBills.forEach(b => {
                 let dateParts = b.dateStr.split('/');
                 let cleanDate = `${parseInt(dateParts[0])}/${parseInt(dateParts[1])}/${dateParts[2]}`;
                 let dateTime = `${cleanDate} ${b.timeStr}`;
@@ -1182,13 +1207,13 @@
                     csv += `"${b.id.substring(0,6).toUpperCase()}","${dateTime}","${cashierCol}","${item.name}","${item.size}",${item.qty},${item.price},${item.price * item.qty}\n`;
                     totalCups += item.qty; 
                 });
+                dailyTotalMoney += b.total;
             });
             
-            csv += `\n"TONG KET","","","","TONG SO LY:",${totalCups},"",""\n`;
-            downloadCSV(csv, "Lich_Su_Ban_Hang.csv");
+            csv += `\n"TONG KET NGAY ${targetDateStr}","","","","TONG SO LY:",${totalCups},"TONG TIEN:",${dailyTotalMoney}\n`;
+            downloadCSV(csv, `Lich_Su_Ban_Hang_${parts[2]}_${parts[1]}_${parts[0]}.csv`);
         }
 
-        // --- CẬP NHẬT CSV DOANH THU CÓ TỔNG SỐ LY ---
         window.exportRevenueStatsCSV = function() {
             const year = parseInt(document.getElementById('stat-year-select').value);
             const month = parseInt(document.getElementById('stat-month-select').value); 
