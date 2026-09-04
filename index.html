@@ -231,6 +231,17 @@
 
         #print-section { display: none; }
 
+        /* ========================================================== */
+        /* CHẾ ĐỘ DÀNH RIÊNG CHO KHÁCH QUÉT QR (?mode=khach)          */
+        /* ========================================================== */
+        body.customer-mode .sidebar { display: none !important; }
+        body.customer-mode .btn-kitchen-top { display: none !important; }
+        body.customer-mode .main-content { padding: 15px !important; }
+        body.customer-mode #sidebar-badge { display: none !important; }
+        body.customer-mode .tab-pane::after { display: none !important; }
+        body.customer-mode .btn-thanh-toan { background: #10B981 !important; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important; }
+        body.customer-mode .btn-thanh-toan:hover { background: #059669 !important; }
+
         @media (max-width: 850px) {
             body { flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
             
@@ -640,12 +651,26 @@
             }
         }
 
+        // Tự động kiểm tra nếu vào bằng link có ?mode=khach
+        const urlParams = new URLSearchParams(window.location.search);
+        const isCustomerMode = urlParams.get('mode') === 'khach';
+
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
                 splash.style.visibility = 'hidden';
             }, 1000);
+
+            if (isCustomerMode) {
+                document.body.classList.add('customer-mode');
+                const cashierInput = document.getElementById('cashier-name');
+                if (cashierInput) cashierInput.placeholder = "Nhập số bàn của bạn (VD: Bàn 03)";
+                const titleEl = document.querySelector('#pane-menu h1');
+                if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-mug-hot"></i> Menu Melon Coffee';
+                const checkoutBtn = document.querySelector('.btn-thanh-toan');
+                if (checkoutBtn) checkoutBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> GỬI YÊU CẦU GỌI MÓN';
+            }
         });
 
         onSnapshot(collection(db, "melon_products"), (snapshot) => {
@@ -778,16 +803,35 @@
         window.removeFromCart = function(index) { cart.splice(index, 1); renderCart(); }
 
         window.checkout = async function() {
-            if(cart.length === 0) return alert("Giỏ trống!");
+            if(cart.length === 0) return alert("Giỏ hàng đang trống!");
+            
+            const cashierInputVal = document.getElementById('cashier-name').value.trim();
+            if (isCustomerMode && !cashierInputVal) {
+                return alert("Vui lòng nhập số bàn hoặc tên của bạn trước khi gửi đơn!");
+            }
+
             const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             const now = new Date();
-            const bill = { dateStr: getCustomDateString(now), timeStr: getCustomTimeString(now), dateObj: now.getTime(), cashier: document.getElementById('cashier-name').value || "Thu ngân", items: [...cart], total: total, status: "pending" };
+            const bill = { 
+                dateStr: getCustomDateString(now), 
+                timeStr: getCustomTimeString(now), 
+                dateObj: now.getTime(), 
+                cashier: cashierInputVal || "Thu ngân", 
+                items: [...cart], 
+                total: total, 
+                status: "pending" 
+            };
             
             try {
                 const docRef = await addDoc(collection(db, "melon_bills"), bill);
-                window.showKitchenToast(docRef.id);
+                if (!isCustomerMode) window.showKitchenToast(docRef.id);
                 cart = []; renderCart(); 
-                alert("Thanh toán thành công! Đơn đã đồng bộ lên Cloud.");
+                
+                if (isCustomerMode) {
+                    alert("Gửi yêu cầu gọi món thành công! Quán đang pha chế cho bạn nhé.");
+                } else {
+                    alert("Thanh toán thành công! Đơn đã đồng bộ lên Cloud.");
+                }
             } catch(e) { alert("Lỗi khi lưu đơn hàng lên cloud: " + e.message); }
         }
 
@@ -799,6 +843,7 @@
             badgeEl.style.display = count > 0 ? 'flex' : 'none';
         }
         window.showKitchenToast = function(billId) {
+            if (isCustomerMode) return;
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = 'toast';
@@ -808,6 +853,7 @@
             setTimeout(() => { if(container.contains(toast)) toast.remove(); }, 6000);
         }
         window.openKitchenModal = function() {
+            if (isCustomerMode) return;
             document.getElementById('toast-container').innerHTML = ''; 
             const list = document.getElementById('kitchen-orders-list');
             list.innerHTML = '';
@@ -816,7 +862,7 @@
             } else {
                 pendingOrders.forEach((o) => {
                     let itemsHtml = o.items.map(i => `<div class="kitchen-item"><b><span style="color:var(--cam-chinh);">${i.qty} x</span></b> ${i.name} (Size ${i.size})</div>`).join('');
-                    list.innerHTML += `<div class="kitchen-order"><h3 style="color: var(--cam-chinh); margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px dashed #D1D5DB; padding-bottom: 8px;">Mã: ${o.id.substring(0,6).toUpperCase()} <span style="color:#6B7280;">${o.timeStr}</span></h3>${itemsHtml}<button class="btn-done" onclick="window.finishOrder('${o.id}')"><i class="fa-solid fa-check-double"></i> ĐÃ PHA XONG</button></div>`;
+                    list.innerHTML += `<div class="kitchen-order"><h3 style="color: var(--cam-chinh); margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px dashed #D1D5DB; padding-bottom: 8px;">Mã: ${o.id.substring(0,6).toUpperCase()} <span style="color:#6B7280;">${o.timeStr} (${o.cashier})</span></h3>${itemsHtml}<button class="btn-done" onclick="window.finishOrder('${o.id}')"><i class="fa-solid fa-check-double"></i> ĐÃ PHA XONG</button></div>`;
                 });
             }
             document.getElementById('kitchen-modal').style.display = 'flex';
@@ -996,7 +1042,7 @@
                 <div style="border-bottom: 1px dashed #9CA3AF; margin-bottom: 15px;"></div>
                 <p style="margin: 4px 0;"><b>Mã HĐ:</b> ${bill.id.substring(0,6).toUpperCase()}</p>
                 <p style="margin: 4px 0;"><b>Ngày:</b> ${bill.timeStr} - ${bill.dateStr}</p>
-                <p style="margin: 4px 0;"><b>Thu ngân:</b> ${bill.cashier}</p>
+                <p style="margin: 4px 0;"><b>Thu ngân / Bàn:</b> ${bill.cashier}</p>
                 <div style="border-bottom: 1px dashed #9CA3AF; margin: 15px 0;"></div>
                 <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 8px;"><div style="flex: 2;">Tên món</div><div style="flex: 1; text-align: center;">SL</div><div style="flex: 1; text-align: right;">TT</div></div>
                 ${itemsHtml}
@@ -1105,9 +1151,7 @@
             document.getElementById('stat-month').innerText = formatMoney(tMonth);
         }
 
-        // ==========================================================
-        // XUẤT CSV 1: LỊCH SỬ BÁN HÀNG (Thu ngân chỉ in 1 ô đầu tiên mỗi bill)
-        // ==========================================================
+        // Xuất File CSV Lịch Sử Bill
         window.exportBillHistoryCSV = function() {
             let csv = `"Ma Bill","Ngay Gio","Thu Ngan","Ten Thuc Uong","Size","So Luong","Don Gia","Tong Cong"\n`;
             
@@ -1117,18 +1161,14 @@
                 let dateTime = `${cleanDate} ${b.timeStr}`;
                 
                 b.items.forEach((item, index) => {
-                    // Dòng đầu tiên của bill thì ghi tên thu ngân, các dòng món tiếp theo trong cùng bill để trống
                     let cashierCol = (index === 0) ? b.cashier : "";
-                    
                     csv += `"${b.id.substring(0,6).toUpperCase()}","${dateTime}","${cashierCol}","${item.name}","${item.size}",${item.qty},${item.price},${item.price * item.qty}\n`;
                 });
             });
             downloadCSV(csv, "Lich_Su_Ban_Hang.csv");
         }
 
-        // ==========================================================
-        // XUẤT CSV 2: TỔNG DOANH THU THÁNG (Bảng kê chi tiết món + Tổng tiền)
-        // ==========================================================
+        // Xuất File CSV Doanh Thu Tháng
         window.exportRevenueStatsCSV = function() {
             const year = parseInt(document.getElementById('stat-year-select').value);
             const month = parseInt(document.getElementById('stat-month-select').value); 
@@ -1163,12 +1203,10 @@
                 }
             });
 
-            // Ghi danh sách từng món nước bán được trong tháng
             Object.values(productSummary).forEach(p => {
                 csv += `"${p.name}","${p.size}",${p.qty},${p.price},${p.total}\n`;
             });
 
-            // Dòng tổng doanh thu cộng dồn toàn bộ cột tổng tiền ở dưới cùng
             csv += `"TONG DOANH THU","","","",${grandTotal}\n`;
             
             downloadCSV(csv, `Bao_Cao_Doanh_Thu_T${month}_${year}.csv`);
