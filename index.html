@@ -239,6 +239,7 @@
         body.customer-mode .main-content { padding: 15px !important; }
         body.customer-mode #sidebar-badge { display: none !important; }
         body.customer-mode .tab-pane::after { display: none !important; }
+        body.customer-mode .cashier-input { display: none !important; }
         body.customer-mode .btn-thanh-toan { background: #10B981 !important; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important; }
         body.customer-mode .btn-thanh-toan:hover { background: #059669 !important; }
 
@@ -373,7 +374,7 @@
                 <div class="pos-products" id="render-products"></div>
                 <div class="pos-cart">
                     <input type="text" class="cashier-input" id="cashier-name" placeholder="Tên thu ngân (VD: Yến Nhi)">
-                    <h3 style="color: var(--cam-chinh); margin-bottom: 10px; font-size: 1.1em; font-weight: 800;">Giỏ hàng hiện tại</h3>
+                    <h3 id="cart-title" style="color: var(--cam-chinh); margin-bottom: 10px; font-size: 1.1em; font-weight: 800;">Giỏ hàng hiện tại</h3>
                     <div class="cart-items" id="render-cart"></div>
                     <div class="cart-total">Tổng: <span id="cart-total-val" style="color: var(--cam-chinh);">0đ</span></div>
                     <button class="btn-thanh-toan" onclick="window.checkout()"><i class="fa-solid fa-print"></i> THANH TOÁN QUẦY</button>
@@ -651,7 +652,7 @@
             }
         }
 
-        // Tự động kiểm tra nếu vào bằng link có ?mode=khach
+        // Tự động nhận diện chế độ khách qua link ?mode=khach
         const urlParams = new URLSearchParams(window.location.search);
         const isCustomerMode = urlParams.get('mode') === 'khach';
 
@@ -664,10 +665,10 @@
 
             if (isCustomerMode) {
                 document.body.classList.add('customer-mode');
-                const cashierInput = document.getElementById('cashier-name');
-                if (cashierInput) cashierInput.placeholder = "Nhập số bàn của bạn (VD: Bàn 03)";
                 const titleEl = document.querySelector('#pane-menu h1');
                 if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-mug-hot"></i> Menu Melon Coffee';
+                const cartTitle = document.getElementById('cart-title');
+                if (cartTitle) cartTitle.innerText = 'Giỏ hàng của bạn';
                 const checkoutBtn = document.querySelector('.btn-thanh-toan');
                 if (checkoutBtn) checkoutBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> GỬI YÊU CẦU GỌI MÓN';
             }
@@ -804,11 +805,10 @@
 
         window.checkout = async function() {
             if(cart.length === 0) return alert("Giỏ hàng đang trống!");
-            
-            const cashierInputVal = document.getElementById('cashier-name').value.trim();
-            if (isCustomerMode && !cashierInputVal) {
-                return alert("Vui lòng nhập số bàn hoặc tên của bạn trước khi gửi đơn!");
-            }
+
+            const cashierName = isCustomerMode 
+                ? "Khách QR" 
+                : (document.getElementById('cashier-name').value.trim() || "Thu ngân");
 
             const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             const now = new Date();
@@ -816,7 +816,7 @@
                 dateStr: getCustomDateString(now), 
                 timeStr: getCustomTimeString(now), 
                 dateObj: now.getTime(), 
-                cashier: cashierInputVal || "Thu ngân", 
+                cashier: cashierName, 
                 items: [...cart], 
                 total: total, 
                 status: "pending" 
@@ -1042,7 +1042,7 @@
                 <div style="border-bottom: 1px dashed #9CA3AF; margin-bottom: 15px;"></div>
                 <p style="margin: 4px 0;"><b>Mã HĐ:</b> ${bill.id.substring(0,6).toUpperCase()}</p>
                 <p style="margin: 4px 0;"><b>Ngày:</b> ${bill.timeStr} - ${bill.dateStr}</p>
-                <p style="margin: 4px 0;"><b>Thu ngân / Bàn:</b> ${bill.cashier}</p>
+                <p style="margin: 4px 0;"><b>Thu ngân / Người đặt:</b> ${bill.cashier}</p>
                 <div style="border-bottom: 1px dashed #9CA3AF; margin: 15px 0;"></div>
                 <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 8px;"><div style="flex: 2;">Tên món</div><div style="flex: 1; text-align: center;">SL</div><div style="flex: 1; text-align: right;">TT</div></div>
                 ${itemsHtml}
