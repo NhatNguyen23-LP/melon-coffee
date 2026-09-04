@@ -449,7 +449,7 @@
                     <thead>
                         <tr>
                             <th>Mã Bill</th>
-                            <th>Ngày Giờ</th>
+                            <th>Thời Gian</th>
                             <th>Thu Ngân</th>
                             <th>Chi Tiết Món</th>
                             <th>Tổng Tiền</th>
@@ -652,7 +652,6 @@
             }
         }
 
-        // Tự động nhận diện chế độ khách qua link ?mode=khach
         const urlParams = new URLSearchParams(window.location.search);
         const isCustomerMode = urlParams.get('mode') === 'khach';
 
@@ -1012,15 +1011,29 @@
             }
         }
 
+        // --- CẬP NHẬT LỊCH SỬ BILL CÓ NGĂN CÁCH THEO NGÀY ---
         window.renderHistory = function() {
             const tbody = document.getElementById('render-history');
             tbody.innerHTML = '';
+            let lastDate = null; 
+
             [...bills].reverse().forEach(b => {
+                if (b.dateStr !== lastDate) {
+                    tbody.innerHTML += `
+                        <tr style="background-color: var(--cam-nhat); border-bottom: 2px solid #FDBA74;">
+                            <td colspan="6" style="text-align: center; font-weight: 800; color: var(--cam-dam); font-size: 1.05em; padding: 12px; text-transform: uppercase;">
+                                <i class="fa-regular fa-calendar-days"></i> Hóa đơn ngày: ${b.dateStr}
+                            </td>
+                        </tr>
+                    `;
+                    lastDate = b.dateStr;
+                }
+
                 let itemsText = b.items.map(i => `<b style="color:#111827">${i.name}</b>(${i.size})x${i.qty}`).join(" <span style='color:#D1D5DB'>|</span> ");
                 tbody.innerHTML += `
                     <tr class="history-row" onclick="window.openPreviewModal('${b.id}')">
                         <td><span class="bill-link">${b.id.substring(0,6).toUpperCase()}</span></td>
-                        <td style="color:#6B7280; font-weight:500;">${b.timeStr} <span style="font-size:0.85em;color:#9CA3AF">${b.dateStr}</span></td>
+                        <td style="color:#6B7280; font-weight:500;">${b.timeStr}</td>
                         <td style="font-weight:600;">${b.cashier}</td>
                         <td style="font-size:0.9em; max-width: 250px; white-space: normal; line-height:1.4;">${itemsText}</td>
                         <td style="color:var(--cam-chinh); font-weight:800; font-size:1.1em;">${formatMoney(b.total)}</td>
@@ -1042,7 +1055,7 @@
                 <div style="border-bottom: 1px dashed #9CA3AF; margin-bottom: 15px;"></div>
                 <p style="margin: 4px 0;"><b>Mã HĐ:</b> ${bill.id.substring(0,6).toUpperCase()}</p>
                 <p style="margin: 4px 0;"><b>Ngày:</b> ${bill.timeStr} - ${bill.dateStr}</p>
-                <p style="margin: 4px 0;"><b>Thu ngân / Người đặt:</b> ${bill.cashier}</p>
+                <p style="margin: 4px 0;"><b>Thu ngân / Bàn:</b> ${bill.cashier}</p>
                 <div style="border-bottom: 1px dashed #9CA3AF; margin: 15px 0;"></div>
                 <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 8px;"><div style="flex: 2;">Tên món</div><div style="flex: 1; text-align: center;">SL</div><div style="flex: 1; text-align: right;">TT</div></div>
                 ${itemsHtml}
@@ -1151,9 +1164,10 @@
             document.getElementById('stat-month').innerText = formatMoney(tMonth);
         }
 
-        // Xuất File CSV Lịch Sử Bill
+        // --- CẬP NHẬT CSV LỊCH SỬ BILL CÓ TỔNG SỐ LY ---
         window.exportBillHistoryCSV = function() {
             let csv = `"Ma Bill","Ngay Gio","Thu Ngan","Ten Thuc Uong","Size","So Luong","Don Gia","Tong Cong"\n`;
+            let totalCups = 0; 
             
             bills.forEach(b => {
                 let dateParts = b.dateStr.split('/');
@@ -1163,12 +1177,15 @@
                 b.items.forEach((item, index) => {
                     let cashierCol = (index === 0) ? b.cashier : "";
                     csv += `"${b.id.substring(0,6).toUpperCase()}","${dateTime}","${cashierCol}","${item.name}","${item.size}",${item.qty},${item.price},${item.price * item.qty}\n`;
+                    totalCups += item.qty; 
                 });
             });
+            
+            csv += `\n"TONG KET","","","","TONG SO LY:",${totalCups},"",""\n`;
             downloadCSV(csv, "Lich_Su_Ban_Hang.csv");
         }
 
-        // Xuất File CSV Doanh Thu Tháng
+        // --- CẬP NHẬT CSV DOANH THU CÓ TỔNG SỐ LY ---
         window.exportRevenueStatsCSV = function() {
             const year = parseInt(document.getElementById('stat-year-select').value);
             const month = parseInt(document.getElementById('stat-month-select').value); 
@@ -1178,6 +1195,7 @@
             
             let productSummary = {};
             let grandTotal = 0;
+            let grandTotalCups = 0; 
 
             bills.forEach(b => {
                 let parts = b.dateStr.split('/');
@@ -1199,6 +1217,7 @@
                         productSummary[key].qty += item.qty;
                         productSummary[key].total += (item.price * item.qty);
                         grandTotal += (item.price * item.qty);
+                        grandTotalCups += item.qty; 
                     });
                 }
             });
@@ -1207,7 +1226,7 @@
                 csv += `"${p.name}","${p.size}",${p.qty},${p.price},${p.total}\n`;
             });
 
-            csv += `"TONG DOANH THU","","","",${grandTotal}\n`;
+            csv += `"TONG KET THANG","","${grandTotalCups} ly","",${grandTotal}\n`;
             
             downloadCSV(csv, `Bao_Cao_Doanh_Thu_T${month}_${year}.csv`);
         }
