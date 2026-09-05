@@ -182,7 +182,7 @@
         .month-picker-container select { padding: 8px 12px; border: 1px solid var(--vien); border-radius: 8px; font-weight: 700; color: var(--cam-chinh); background: #F9FAFB; outline: none; cursor: pointer;}
         
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--vien); box-shadow: 0 4px 20px rgba(0,0,0,0.02);}
-        .cal-cell { border: 1px solid var(--vien); border-radius: 10px; padding: 10px; min-height: 80px; display: flex; flex-direction: column; justify-content: space-between; background: #FAFAFA; transition: 0.2s; }
+        .cal-cell { border: 1px solid var(--vien); border-radius: 10px; padding: 10px; min-height: 85px; display: flex; flex-direction: column; justify-content: space-between; background: #FAFAFA; transition: 0.2s; }
         .cal-cell:hover { background: white; border-color: #D1D5DB; }
         .cal-cell.has-data { background: var(--cam-nhat); border-color: #FDBA74; }
         .cal-cell.today { border: 2px solid var(--cam-chinh); background: #FFF7ED; } 
@@ -700,7 +700,6 @@
             renderMenu(); renderManageList(); renderRecipes(); populateEditProductDropdown();
         });
 
-        // --- CẬP NHẬT CHỨC NĂNG RUNG KHI CÓ ĐƠN MỚI ---
         let previousPendingIds = new Set();
         let isFirstLoad = true;
 
@@ -726,10 +725,9 @@
             renderHistory(); renderStats(); updateKitchenBadge();
             if(document.getElementById('kitchen-modal').style.display === 'flex') window.openKitchenModal();
 
-            // Nếu có đơn mới và không phải đang ở máy của khách => Rung và hiện Toast
             if (!isFirstLoad && hasNewOrder && !isCustomerMode) {
                 if (navigator.vibrate) {
-                    navigator.vibrate([200, 100, 200, 100, 400]); // Rung tít tít títttt
+                    navigator.vibrate([200, 100, 200, 100, 400]); 
                 }
                 window.showKitchenToast();
             }
@@ -801,7 +799,6 @@
             }
         });
 
-        // --- CẬP NHẬT HIỂN THỊ 3 SIZE S-M-L TRONG MENU ---
         function renderMenu() {
             const container = document.getElementById('render-products');
             container.innerHTML = '';
@@ -815,7 +812,6 @@
                         const clickActionL = p.soldOut ? '' : `onclick="window.addToCart('${p.id}', 'L', ${p.priceL})"`;
                         const soldOutBadge = p.soldOut ? '<div style="color:#EF4444; font-weight:800; font-size:0.85em; margin-bottom:4px;">(TẠM HẾT MÓN)</div>' : '';
 
-                        // Nút Size M (Chỉ hiện nếu quản lý có nhập giá cho Size M)
                         let sizeM_btn = '';
                         if (p.priceM && p.priceM > 0) {
                             const clickActionM = p.soldOut ? '' : `onclick="window.addToCart('${p.id}', 'M', ${p.priceM})"`;
@@ -842,12 +838,11 @@
         window.addToCart = function(id, size, price) {
             const product = products.find(p => p.id === id);
             if(product && product.soldOut) return;
-            const existing = cart.find(c => c.id === id && c.size === size && c.price === price); // So sánh cả giá để phân biệt món đã bị đổi giá
+            const existing = cart.find(c => c.id === id && c.size === size && c.price === price);
             if(existing) existing.qty++; else cart.push({ id, name: product.name, size, price, qty: 1 });
             renderCart();
         }
 
-        // TÍNH NĂNG ĐỔI GIÁ TRỰC TIẾP TRONG GIỎ HÀNG
         window.editCartItemPrice = function(index) {
             let currentPrice = cart[index].price;
             let newPriceStr = prompt(`Đang sửa giá cho: ${cart[index].name} (Size ${cart[index].size})\nNhập giá mới (Ví dụ: 20000):`, currentPrice);
@@ -1160,7 +1155,6 @@
             currentPreviewBillId = billId;
             let itemsHtml = bill.items.map(i => `<div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><div style="flex: 2;">${i.name} (${i.size})</div><div style="flex: 1; text-align: center;">x${i.qty}</div><div style="flex: 1; text-align: right;">${formatMoney(i.price * i.qty)}</div></div>`).join('');
             
-            // Xử lý hiển thị thông tin Khách hàng & Icon Google Maps cho Shipper
             let customerHtml = '';
             if (bill.custName || bill.custPhone || bill.custAddress) {
                 let mapLink = bill.custAddress ? ` <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(bill.custAddress)}" target="_blank" class="no-print-icon" style="color: #10B981; font-size: 1.2em; text-decoration: none; margin-left: 8px;" title="Mở bản đồ"><i class="fa-solid fa-map-location-dot"></i></a>` : '';
@@ -1214,7 +1208,6 @@
         }
         window.closeEditBillModal = function() { tempEditBill = null; document.getElementById('edit-bill-modal').style.display = 'none'; }
         
-        // TÍNH NĂNG ĐỔI GIÁ TRONG PHẦN SỬA BILL CŨ
         window.editTempBillItemPrice = function(index) {
             let currentPrice = tempEditBill.items[index].price;
             let newPriceStr = prompt(`Sửa giá món: ${tempEditBill.items[index].name}\nNhập giá mới (Ví dụ: 20000):`, currentPrice);
@@ -1284,15 +1277,17 @@
             } catch(e) { alert("Lỗi sửa bill: " + e.message); }
         }
 
+        // --- CẬP NHẬT HIỂN THỊ SỐ LY LÊN TỪNG Ô CỦA LỊCH ---
         window.renderStats = function() {
             const now = new Date(); 
             let t1d = 0, tMonth = 0;
             let t1d_cups = 0, tMonth_cups = 0;
             const dailyRev = {};
+            const dailyCupsObj = {}; // Lưu số ly theo từng ngày
             const todayStr = getCustomDateString(now);
             
             const year = parseInt(document.getElementById('stat-year-select').value);
-            const month = parseInt(document.getElementById('stat-month-select').value) - 1; // 0-indexed
+            const month = parseInt(document.getElementById('stat-month-select').value) - 1; 
 
             bills.forEach(b => {
                 let totalCupsInBill = b.items.reduce((sum, item) => sum + item.qty, 0);
@@ -1309,8 +1304,12 @@
                     tMonth_cups += totalCupsInBill;
                 }
                 
-                if(!dailyRev[b.dateStr]) dailyRev[b.dateStr] = 0;
+                if(!dailyRev[b.dateStr]) {
+                    dailyRev[b.dateStr] = 0;
+                    dailyCupsObj[b.dateStr] = 0;
+                }
                 dailyRev[b.dateStr] += b.total;
+                dailyCupsObj[b.dateStr] += totalCupsInBill; // Cộng dồn số ly vào ngày đó
             });
 
             document.getElementById('stat-1d').innerText = formatMoney(t1d);
@@ -1326,10 +1325,20 @@
             for(let i=1; i<=lastDate; i++) {
                 let dStr = getCustomDateString(new Date(year, month, i));
                 let rev = dailyRev[dStr] || 0; tMonth += rev;
+                let cups = dailyCupsObj[dStr] || 0; // Lấy số ly của ngày đó
                 
                 let isToday = (dStr === getCustomDateString(now)) ? 'today' : '';
                 let bg = rev > 0 ? 'has-data' : '';
-                let revHtml = rev > 0 ? `<div class="cal-rev">+${(rev/1000)}k</div>` : '';
+                
+                let revHtml = '';
+                if(rev > 0) {
+                    // Nếu có doanh thu thì in ra Số ly ở trên, Số tiền ở dưới
+                    revHtml = `
+                    <div style="text-align: right; margin-top: auto;">
+                        <div style="font-size: 0.8em; color: #4B5563; font-weight: 700; line-height: 1; margin-bottom: 2px;">${cups} ly</div>
+                        <div class="cal-rev" style="line-height: 1.2;">+${(rev/1000)}k</div>
+                    </div>`;
+                }
                 
                 grid.innerHTML += `<div class="cal-cell ${bg} ${isToday}"><div class="cal-date">${i}</div>${revHtml}</div>`;
             }
