@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#FF6600">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Melon POS">
+    <meta name="apple-mobile-web-app-title" content="Melon Coffee">
     
     <link rel="icon" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
@@ -173,7 +173,7 @@
         .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .stat-box { background: white; padding: 25px 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; border: 1px solid var(--vien);}
         .stat-box::before { content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: var(--cam-chinh); }
-        .stat-box:nth-child(4)::before { background: #10B981; } 
+        .stat-box:nth-child(2)::before { background: #10B981; } /* Đổi màu xanh cho hộp số 2 (Tổng tháng) */
         .stat-box h3 { color: #6B7280; font-size: 0.85em; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;}
         .stat-box .val { color: #111827; font-size: 1.8em; font-weight: 800; }
         .stat-box i.bg-icon { position: absolute; right: 10px; bottom: -15px; font-size: 5em; color: rgba(255, 102, 0, 0.04); transform: rotate(-15deg); }
@@ -495,16 +495,6 @@
                     <i class="fa-solid fa-calendar-day bg-icon"></i>
                     <h3>Thu Hôm Nay</h3>
                     <div class="val" id="stat-1d">0đ</div>
-                </div>
-                <div class="stat-box">
-                    <i class="fa-solid fa-calendar-week bg-icon"></i>
-                    <h3>Thu 3 Ngày Qua</h3>
-                    <div class="val" id="stat-3d">0đ</div>
-                </div>
-                <div class="stat-box">
-                    <i class="fa-solid fa-chart-bar bg-icon"></i>
-                    <h3>Thu 1 Tuần Qua</h3>
-                    <div class="val" id="stat-1w">0đ</div>
                 </div>
                 <div class="stat-box">
                     <i class="fa-solid fa-sack-dollar bg-icon" style="color: rgba(40, 167, 69, 0.1);"></i>
@@ -840,7 +830,7 @@
                 if (!cName || !cPhone) {
                     return alert("Vui lòng nhập đầy đủ Tên và Số điện thoại để quán liên hệ nhé!");
                 }
-                cashierName = "Khách: " + cName; 
+                cashierName = "Khách QR: " + cName; 
             } else {
                 cashierName = document.getElementById('cashier-name').value.trim() || "Thu ngân";
             }
@@ -1102,7 +1092,7 @@
             currentPreviewBillId = billId;
             let itemsHtml = bill.items.map(i => `<div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><div style="flex: 2;">${i.name} (${i.size})</div><div style="flex: 1; text-align: center;">x${i.qty}</div><div style="flex: 1; text-align: right;">${formatMoney(i.price * i.qty)}</div></div>`).join('');
             
-            // Xử lý hiển thị thông tin Shipper & Icon Google Maps
+            // Xử lý hiển thị thông tin Khách hàng & Icon Google Maps cho Shipper
             let customerHtml = '';
             if (bill.custName || bill.custPhone || bill.custAddress) {
                 let mapLink = bill.custAddress ? ` <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(bill.custAddress)}" target="_blank" class="no-print-icon" style="color: #10B981; font-size: 1.2em; text-decoration: none; margin-left: 8px;" title="Mở bản đồ"><i class="fa-solid fa-map-location-dot"></i></a>` : '';
@@ -1191,21 +1181,18 @@
         }
 
         window.renderStats = function() {
-            const now = new Date(); let t1d = 0, t3d = 0, t1w = 0, tMonth = 0;
+            const now = new Date(); let t1d = 0, tMonth = 0;
             const dailyRev = {};
 
             bills.forEach(b => {
                 const diffDays = Math.ceil(Math.abs(now - new Date(b.dateObj)) / (1000 * 3600 * 24));
                 if(diffDays <= 1) t1d += b.total;
-                if(diffDays <= 3) t3d += b.total;
-                if(diffDays <= 7) t1w += b.total;
+                
                 if(!dailyRev[b.dateStr]) dailyRev[b.dateStr] = 0;
                 dailyRev[b.dateStr] += b.total;
             });
 
             document.getElementById('stat-1d').innerText = formatMoney(t1d);
-            document.getElementById('stat-3d').innerText = formatMoney(t3d);
-            document.getElementById('stat-1w').innerText = formatMoney(t1w);
 
             const year = parseInt(document.getElementById('stat-year-select').value);
             const month = parseInt(document.getElementById('stat-month-select').value) - 1;
