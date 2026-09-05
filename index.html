@@ -111,8 +111,8 @@
         
         .product-card.sold-out { opacity: 0.6; filter: grayscale(1); background: #F3F4F6; pointer-events: none; }
         
-        .size-btns { display: flex; gap: 8px; justify-content: center; width: 100%; margin-top: 5px;}
-        .btn-size { flex: 1; padding: 8px 4px; border: 1px solid var(--cam-nhat); background: var(--cam-nhat); color: var(--cam-dam); border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8em; transition: 0.2s;}
+        .size-btns { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; width: 100%; margin-top: 5px;}
+        .btn-size { flex: 1; min-width: 30%; padding: 6px 2px; border: 1px solid var(--cam-nhat); background: var(--cam-nhat); color: var(--cam-dam); border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 0.75em; transition: 0.2s;}
         .btn-size:hover { background: var(--cam-chinh); color: white; border-color: var(--cam-chinh); }
         
         .cashier-input { width: 100%; padding: 12px 15px; border: 1px solid var(--vien); border-radius: 10px; outline: none; font-size: 0.95em; background: #F9FAFB; transition: 0.2s;}
@@ -126,7 +126,7 @@
         /* --- QUẢN LÝ MÓN --- */
         .manage-container { display: flex; flex-direction: column; gap: 20px; max-width: 900px; margin: 0 auto; width: 100%; padding-bottom: 40px;}
         .form-add, .manage-list { background: var(--trang); padding: 25px; border-radius: 16px; border: 1px solid var(--vien); box-shadow: 0 4px 20px rgba(0,0,0,0.02);}
-        .split-col { display: flex; gap: 15px; }
+        .split-col { display: flex; gap: 10px; }
         .form-group { margin-bottom: 15px; flex: 1;}
         .form-group label { display: block; font-weight: 700; margin-bottom: 8px; color: #374151; font-size: 0.9em; }
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--vien); border-radius: 10px; outline: none; font-size: 0.95em; background: #F9FAFB; transition: 0.2s;}
@@ -173,7 +173,7 @@
         .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .stat-box { background: white; padding: 25px 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; border: 1px solid var(--vien);}
         .stat-box::before { content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: var(--cam-chinh); }
-        .stat-box:nth-child(2)::before { background: #10B981; } /* Đổi màu xanh cho hộp Tổng tháng */
+        .stat-box:nth-child(2)::before { background: #10B981; } 
         .stat-box h3 { color: #6B7280; font-size: 0.85em; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;}
         .stat-box .val { color: #111827; font-size: 1.8em; font-weight: 800; }
         .stat-box i.bg-icon { position: absolute; right: 10px; bottom: -15px; font-size: 5em; color: rgba(255, 102, 0, 0.04); transform: rotate(-15deg); }
@@ -430,16 +430,22 @@
                         <label>Tên món nước</label>
                         <input type="text" id="add-name" placeholder="VD: Nước Ép Dưa Hấu">
                     </div>
+                    
                     <div class="split-col">
                         <div class="form-group">
                             <label>Giá Size S (VNĐ)</label>
                             <input type="text" inputmode="numeric" id="add-price-s" placeholder="30,000" oninput="window.formatCurrencyInput(this)">
                         </div>
                         <div class="form-group">
+                            <label>Giá Size M (VNĐ)</label>
+                            <input type="text" inputmode="numeric" id="add-price-m" placeholder="(Bỏ trống nếu ko có)" oninput="window.formatCurrencyInput(this)">
+                        </div>
+                        <div class="form-group">
                             <label>Giá Size L (VNĐ)</label>
                             <input type="text" inputmode="numeric" id="add-price-l" placeholder="40,000" oninput="window.formatCurrencyInput(this)">
                         </div>
                     </div>
+                    
                     <div class="form-group">
                         <label>Công thức pha chế (Mỗi bước 1 dòng)</label>
                         <textarea id="add-recipe" placeholder="Bước 1: Chuẩn bị...&#10;Bước 2: Ép lấy nước..."></textarea>
@@ -495,11 +501,13 @@
                     <i class="fa-solid fa-calendar-day bg-icon"></i>
                     <h3>Thu Hôm Nay</h3>
                     <div class="val" id="stat-1d">0đ</div>
+                    <div style="color: #6B7280; font-size: 0.9em; font-weight: 700; margin-top: 5px;" id="stat-1d-cups">0 ly</div>
                 </div>
                 <div class="stat-box">
                     <i class="fa-solid fa-sack-dollar bg-icon" style="color: rgba(40, 167, 69, 0.1);"></i>
                     <h3 style="color: #10B981;">TỔNG THÁNG ĐANG CHỌN</h3>
                     <div class="val" id="stat-month" style="color: #10B981;">0đ</div>
+                    <div style="color: #10B981; font-size: 0.9em; font-weight: 700; margin-top: 5px;" id="stat-month-cups">0 ly</div>
                 </div>
             </div>
 
@@ -548,6 +556,10 @@
                     <input type="text" inputmode="numeric" id="modal-edit-price-s" oninput="window.formatCurrencyInput(this)">
                 </div>
                 <div class="form-group">
+                    <label>Giá Size M (VNĐ)</label>
+                    <input type="text" inputmode="numeric" id="modal-edit-price-m" placeholder="(Bỏ trống nếu ko có)" oninput="window.formatCurrencyInput(this)">
+                </div>
+                <div class="form-group">
                     <label>Giá Size L (VNĐ)</label>
                     <input type="text" inputmode="numeric" id="modal-edit-price-l" oninput="window.formatCurrencyInput(this)">
                 </div>
@@ -586,12 +598,13 @@
         <div class="modal-content">
             <span class="close-btn" onclick="window.closeEditBillModal()">&times;</span>
             <h2 style="color: var(--cam-chinh); margin-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Chỉnh Sửa Bill: <span id="edit-modal-bill-id"></span></h2>
-            <p style="color: #6B7280; font-size: 0.9em; margin-bottom: 20px;">Bạn có thể thay đổi số lượng, xóa món hoặc thêm món mới bị thiếu vào bill này.</p>
+            <p style="color: #6B7280; font-size: 0.9em; margin-bottom: 20px;">Bạn có thể thay đổi số lượng, sửa giá tiền (bấm vào giá), xóa món hoặc thêm món mới bị thiếu.</p>
             
             <div class="add-new-item-box">
                 <select id="edit-add-product-id"></select>
                 <select id="edit-add-size" style="width: 100px;">
                     <option value="S">Size S</option>
+                    <option value="M">Size M</option>
                     <option value="L">Size L</option>
                 </select>
                 <button class="btn-action btn-excel" style="margin: 0; padding: 10px;" onclick="window.editBillAddNewItem()"><i class="fa-solid fa-plus"></i> Thêm</button>
@@ -687,16 +700,41 @@
             renderMenu(); renderManageList(); renderRecipes(); populateEditProductDropdown();
         });
 
+        // --- CẬP NHẬT CHỨC NĂNG RUNG KHI CÓ ĐƠN MỚI ---
+        let previousPendingIds = new Set();
+        let isFirstLoad = true;
+
         onSnapshot(collection(db, "melon_bills"), (snapshot) => {
             bills = []; pendingOrders = []; 
+            let currentPendingIds = new Set();
+            let hasNewOrder = false;
+
             snapshot.forEach(doc => {
                 let b = { id: doc.id, ...doc.data() };
                 bills.push(b);
-                if(b.status === "pending") pendingOrders.push(b); 
+                if(b.status === "pending") {
+                    pendingOrders.push(b);
+                    currentPendingIds.add(b.id);
+                    if (!isFirstLoad && !previousPendingIds.has(b.id)) {
+                        hasNewOrder = true;
+                    }
+                }
             });
             bills.sort((a,b) => a.dateObj - b.dateObj);
+            previousPendingIds = currentPendingIds;
+            
             renderHistory(); renderStats(); updateKitchenBadge();
             if(document.getElementById('kitchen-modal').style.display === 'flex') window.openKitchenModal();
+
+            // Nếu có đơn mới và không phải đang ở máy của khách => Rung và hiện Toast
+            if (!isFirstLoad && hasNewOrder && !isCustomerMode) {
+                if (navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200, 100, 400]); // Rung tít tít títttt
+                }
+                window.showKitchenToast();
+            }
+            
+            isFirstLoad = false;
         });
 
         function initMonthYearPickers() {
@@ -763,6 +801,7 @@
             }
         });
 
+        // --- CẬP NHẬT HIỂN THỊ 3 SIZE S-M-L TRONG MENU ---
         function renderMenu() {
             const container = document.getElementById('render-products');
             container.innerHTML = '';
@@ -776,6 +815,13 @@
                         const clickActionL = p.soldOut ? '' : `onclick="window.addToCart('${p.id}', 'L', ${p.priceL})"`;
                         const soldOutBadge = p.soldOut ? '<div style="color:#EF4444; font-weight:800; font-size:0.85em; margin-bottom:4px;">(TẠM HẾT MÓN)</div>' : '';
 
+                        // Nút Size M (Chỉ hiện nếu quản lý có nhập giá cho Size M)
+                        let sizeM_btn = '';
+                        if (p.priceM && p.priceM > 0) {
+                            const clickActionM = p.soldOut ? '' : `onclick="window.addToCart('${p.id}', 'M', ${p.priceM})"`;
+                            sizeM_btn = `<button class="btn-size" ${clickActionM}>Size M<br>${formatMoney(p.priceM)}</button>`;
+                        }
+
                         container.innerHTML += `
                             <div class="product-card ${isSoldOut}">
                                 <img src="${p.img}">
@@ -783,6 +829,7 @@
                                 ${soldOutBadge}
                                 <div class="size-btns">
                                     <button class="btn-size" ${clickAction}>Size S<br>${formatMoney(p.priceS)}</button>
+                                    ${sizeM_btn}
                                     <button class="btn-size" ${clickActionL}>Size L<br>${formatMoney(p.priceL)}</button>
                                 </div>
                             </div>
@@ -795,9 +842,25 @@
         window.addToCart = function(id, size, price) {
             const product = products.find(p => p.id === id);
             if(product && product.soldOut) return;
-            const existing = cart.find(c => c.id === id && c.size === size);
+            const existing = cart.find(c => c.id === id && c.size === size && c.price === price); // So sánh cả giá để phân biệt món đã bị đổi giá
             if(existing) existing.qty++; else cart.push({ id, name: product.name, size, price, qty: 1 });
             renderCart();
+        }
+
+        // TÍNH NĂNG ĐỔI GIÁ TRỰC TIẾP TRONG GIỎ HÀNG
+        window.editCartItemPrice = function(index) {
+            let currentPrice = cart[index].price;
+            let newPriceStr = prompt(`Đang sửa giá cho: ${cart[index].name} (Size ${cart[index].size})\nNhập giá mới (Ví dụ: 20000):`, currentPrice);
+            
+            if (newPriceStr !== null && newPriceStr.trim() !== "") {
+                let newPrice = parseInt(newPriceStr.replace(/\D/g, ''));
+                if (!isNaN(newPrice)) {
+                    cart[index].price = newPrice;
+                    renderCart();
+                } else {
+                    alert("Số tiền không hợp lệ!");
+                }
+            }
         }
 
         function renderCart() {
@@ -808,7 +871,10 @@
                 total += c.price * c.qty;
                 container.innerHTML += `
                     <div class="cart-item">
-                        <div><b style="color: #1F2937;">${c.name} <span style="background:var(--cam-nhat); color:var(--cam-dam); padding:2px 6px; border-radius:4px; font-size:0.8em; margin-left: 5px;">Size ${c.size}</span></b><br><span style="color:#6B7280; font-size:0.95em">${formatMoney(c.price)} x ${c.qty}</span></div>
+                        <div>
+                            <b style="color: #1F2937;">${c.name} <span style="background:var(--cam-nhat); color:var(--cam-dam); padding:2px 6px; border-radius:4px; font-size:0.8em; margin-left: 5px;">Size ${c.size}</span></b><br>
+                            <span style="color:#6B7280; font-size:0.95em; cursor:pointer;" onclick="window.editCartItemPrice(${index})" title="Bấm để sửa giá món này">${formatMoney(c.price)} <i class="fa-solid fa-pen-to-square" style="color:var(--cam-chinh); font-size:0.85em;"></i> x ${c.qty}</span>
+                        </div>
                         <div style="text-align:right; display:flex; align-items:center; gap:10px;"><span style="color:var(--cam-chinh); font-weight:800">${formatMoney(c.price * c.qty)}</span> <i class="fa-solid fa-trash" style="color:#EF4444; cursor:pointer; padding:5px;" onclick="window.removeFromCart(${index})"></i></div>
                     </div>`;
             });
@@ -851,8 +917,7 @@
             };
             
             try {
-                const docRef = await addDoc(collection(db, "melon_bills"), bill);
-                if (!isCustomerMode) window.showKitchenToast(docRef.id);
+                await addDoc(collection(db, "melon_bills"), bill);
                 cart = []; renderCart(); 
                 
                 if (isCustomerMode) {
@@ -867,14 +932,7 @@
             } catch(e) { alert("Lỗi khi lưu đơn hàng lên cloud: " + e.message); }
         }
 
-        function updateKitchenBadge() {
-            const count = pendingOrders.length;
-            document.getElementById('sidebar-badge').innerText = count;
-            document.getElementById('top-badge').innerText = count;
-            const badgeEl = document.getElementById('sidebar-badge');
-            badgeEl.style.display = count > 0 ? 'flex' : 'none';
-        }
-        window.showKitchenToast = function(billId) {
+        window.showKitchenToast = function() {
             if (isCustomerMode) return;
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -884,6 +942,7 @@
             container.appendChild(toast);
             setTimeout(() => { if(container.contains(toast)) toast.remove(); }, 6000);
         }
+
         window.openKitchenModal = function() {
             if (isCustomerMode) return;
             document.getElementById('toast-container').innerHTML = ''; 
@@ -945,13 +1004,15 @@
 
         function renderManageList() {
             const container = document.getElementById('render-manage-items');
-            container.innerHTML = products.map(p => `
+            container.innerHTML = products.map(p => {
+                let sizeM_text = (p.priceM && p.priceM > 0) ? ` | M: ${formatMoney(p.priceM)}` : '';
+                return `
                 <div class="manage-item">
                     <div class="manage-info">
                         <img src="${p.img}">
                         <div>
                             <b style="font-size: 1.05em; color: #111827;">${p.name}</b> ${p.soldOut ? '<span style="color:#EF4444; font-size:0.8em; font-weight: bold; background: #FEE2E2; padding: 2px 6px; border-radius: 4px; margin-left: 5px;">(Tạm hết)</span>' : ''}<br>
-                            <span style="font-size:0.9em;color:#6B7280; margin-top: 4px; display: block;">S: ${formatMoney(p.priceS)} | L: ${formatMoney(p.priceL)}</span>
+                            <span style="font-size:0.9em;color:#6B7280; margin-top: 4px; display: block;">S: ${formatMoney(p.priceS)}${sizeM_text} | L: ${formatMoney(p.priceL)}</span>
                         </div>
                     </div>
                     <div style="display: flex; gap: 8px; align-items: center;">
@@ -961,7 +1022,8 @@
                         <button class="btn-action btn-edit" onclick="window.editProduct('${p.id}')"><i class="fa-solid fa-pen"></i> Sửa</button>
                         <button class="btn-action btn-delete" onclick="window.deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i></button>
                     </div>
-                </div>`).join('');
+                </div>`;
+            }).join('');
         }
 
         window.toggleSoldOut = async function(id, isSoldOut) {
@@ -978,6 +1040,7 @@
             document.getElementById('modal-edit-product-id').value = p.id;
             document.getElementById('modal-edit-name').value = p.name;
             document.getElementById('modal-edit-price-s').value = p.priceS ? p.priceS.toLocaleString('en-US') : '';
+            document.getElementById('modal-edit-price-m').value = p.priceM ? p.priceM.toLocaleString('en-US') : '';
             document.getElementById('modal-edit-price-l').value = p.priceL ? p.priceL.toLocaleString('en-US') : '';
             document.getElementById('modal-edit-recipe').value = p.recipe || '';
             document.getElementById('modal-edit-category').value = p.category;
@@ -996,14 +1059,16 @@
             const id = document.getElementById('modal-edit-product-id').value;
             const name = document.getElementById('modal-edit-name').value;
             const priceS = parseInt(document.getElementById('modal-edit-price-s').value.replace(/[,.]/g, ''));
+            const priceM_val = document.getElementById('modal-edit-price-m').value;
+            const priceM = priceM_val ? parseInt(priceM_val.replace(/[,.]/g, '')) : 0;
             const priceL = parseInt(document.getElementById('modal-edit-price-l').value.replace(/[,.]/g, ''));
             const recipe = document.getElementById('modal-edit-recipe').value;
             const cat = document.getElementById('modal-edit-category').value;
             const img = document.getElementById('modal-edit-image-base64').value;
 
-            if(!name || isNaN(priceS) || isNaN(priceL)) return alert("Vui lòng điền đủ Tên và Giá!");
+            if(!name || isNaN(priceS) || isNaN(priceL)) return alert("Vui lòng điền đủ Tên và Giá (Size M có thể để trống nếu không có)!");
             
-            let productData = { category: cat, name, priceS, priceL, recipe, img };
+            let productData = { category: cat, name, priceS, priceM: (priceM || 0), priceL, recipe, img };
 
             try {
                 await setDoc(doc(db, "melon_products", id), productData, { merge: true });
@@ -1015,6 +1080,7 @@
         window.resetProductForm = function() {
             document.getElementById('add-name').value = '';
             document.getElementById('add-price-s').value = '';
+            document.getElementById('add-price-m').value = '';
             document.getElementById('add-price-l').value = '';
             document.getElementById('add-recipe').value = '';
             document.getElementById('add-image-base64').value = '';
@@ -1030,14 +1096,16 @@
         window.saveNewProduct = async function() {
             const name = document.getElementById('add-name').value;
             const priceS = parseInt(document.getElementById('add-price-s').value.replace(/[,.]/g, ''));
+            const priceM_val = document.getElementById('add-price-m').value;
+            const priceM = priceM_val ? parseInt(priceM_val.replace(/[,.]/g, '')) : 0;
             const priceL = parseInt(document.getElementById('add-price-l').value.replace(/[,.]/g, ''));
             const recipe = document.getElementById('add-recipe').value;
             const cat = document.getElementById('add-category').value;
             const img = document.getElementById('add-image-base64').value || "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23FFF0E6'/><text y='65' x='10' font-size='70'>🍈</text></svg>";
 
-            if(!name || isNaN(priceS) || isNaN(priceL)) return alert("Vui lòng điền đủ Tên và Giá!");
+            if(!name || isNaN(priceS) || isNaN(priceL)) return alert("Vui lòng điền đủ Tên và Giá (Size M có thể để trống nếu không có)!");
             
-            let productData = { category: cat, name, priceS, priceL, recipe, img, soldOut: false };
+            let productData = { category: cat, name, priceS, priceM: (priceM || 0), priceL, recipe, img, soldOut: false };
 
             try {
                 await addDoc(collection(db, "melon_products"), productData);
@@ -1145,13 +1213,44 @@
             document.getElementById('edit-bill-modal').style.display = 'flex';
         }
         window.closeEditBillModal = function() { tempEditBill = null; document.getElementById('edit-bill-modal').style.display = 'none'; }
+        
+        // TÍNH NĂNG ĐỔI GIÁ TRONG PHẦN SỬA BILL CŨ
+        window.editTempBillItemPrice = function(index) {
+            let currentPrice = tempEditBill.items[index].price;
+            let newPriceStr = prompt(`Sửa giá món: ${tempEditBill.items[index].name}\nNhập giá mới (Ví dụ: 20000):`, currentPrice);
+            
+            if (newPriceStr !== null && newPriceStr.trim() !== "") {
+                let newPrice = parseInt(newPriceStr.replace(/\D/g, ''));
+                if (!isNaN(newPrice)) {
+                    tempEditBill.items[index].price = newPrice;
+                    renderEditBillItems();
+                } else {
+                    alert("Số tiền không hợp lệ!");
+                }
+            }
+        }
+
         function renderEditBillItems() {
             const container = document.getElementById('edit-modal-items-list');
             let total = 0; container.innerHTML = '';
             if(tempEditBill.items.length === 0) container.innerHTML = '<p style="text-align:center; color:#EF4444; font-weight:600;">Bill đang trống! Hãy thêm món hoặc xóa luôn bill này.</p>';
             tempEditBill.items.forEach((item, index) => {
                 total += item.price * item.qty;
-                container.innerHTML += `<div class="edit-row"><div><b style="color:#111827; font-size:1.1em;">${item.name}</b> <span style="background:var(--cam-chinh); color:white; padding:2px 6px; border-radius:4px; font-size:0.8em; font-weight:bold;">Size ${item.size}</span><div style="color:#6B7280; font-size:0.9em; margin-top:6px;">Đơn giá: ${formatMoney(item.price)}</div></div><div class="qty-controls"><button class="qty-btn" onclick="window.updateTempBillQty(${index}, -1)">-</button><span style="font-weight:800; font-size:1.2em; width:25px; text-align:center;">${item.qty}</span><button class="qty-btn" onclick="window.updateTempBillQty(${index}, 1)">+</button><button class="btn-action btn-delete" style="margin-left:15px; padding: 6px 12px;" onclick="window.removeTempBillItem(${index})"><i class="fa-solid fa-xmark"></i></button></div></div>`;
+                container.innerHTML += `
+                    <div class="edit-row">
+                        <div>
+                            <b style="color:#111827; font-size:1.1em;">${item.name}</b> <span style="background:var(--cam-chinh); color:white; padding:2px 6px; border-radius:4px; font-size:0.8em; font-weight:bold;">Size ${item.size}</span>
+                            <div style="color:#6B7280; font-size:0.9em; margin-top:6px; cursor:pointer;" onclick="window.editTempBillItemPrice(${index})" title="Bấm để sửa giá">
+                                Đơn giá: ${formatMoney(item.price)} <i class="fa-solid fa-pen-to-square" style="color:var(--cam-chinh);"></i>
+                            </div>
+                        </div>
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="window.updateTempBillQty(${index}, -1)">-</button>
+                            <span style="font-weight:800; font-size:1.2em; width:25px; text-align:center;">${item.qty}</span>
+                            <button class="qty-btn" onclick="window.updateTempBillQty(${index}, 1)">+</button>
+                            <button class="btn-action btn-delete" style="margin-left:15px; padding: 6px 12px;" onclick="window.removeTempBillItem(${index})"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>`;
             });
             tempEditBill.total = total;
             document.getElementById('edit-modal-total').innerText = formatMoney(total);
@@ -1166,7 +1265,12 @@
             const prodId = document.getElementById('edit-add-product-id').value;
             const size = document.getElementById('edit-add-size').value;
             const product = products.find(p => p.id === prodId);
-            const price = size === 'S' ? product.priceS : product.priceL;
+            
+            let price = 0;
+            if (size === 'S') price = product.priceS;
+            else if (size === 'M') price = product.priceM || 0;
+            else price = product.priceL;
+
             const existing = tempEditBill.items.find(i => i.id === prodId && i.size === size);
             if(existing) existing.qty++; else tempEditBill.items.push({ id: prodId, name: product.name, size: size, price: price, qty: 1 });
             renderEditBillItems();
@@ -1183,13 +1287,26 @@
         window.renderStats = function() {
             const now = new Date(); 
             let t1d = 0, tMonth = 0;
+            let t1d_cups = 0, tMonth_cups = 0;
             const dailyRev = {};
             const todayStr = getCustomDateString(now);
+            
+            const year = parseInt(document.getElementById('stat-year-select').value);
+            const month = parseInt(document.getElementById('stat-month-select').value) - 1; // 0-indexed
 
             bills.forEach(b => {
-                // Sửa lỗi: Chỉ tính những bill nằm trong đúng ngày hôm nay (khớp 100% lịch)
+                let totalCupsInBill = b.items.reduce((sum, item) => sum + item.qty, 0);
+
                 if (b.dateStr === todayStr) {
                     t1d += b.total;
+                    t1d_cups += totalCupsInBill;
+                }
+                
+                let parts = b.dateStr.split('/');
+                let bMonth = parseInt(parts[1]);
+                let bYear = parseInt(parts[2]);
+                if (bMonth === month + 1 && bYear === year) {
+                    tMonth_cups += totalCupsInBill;
                 }
                 
                 if(!dailyRev[b.dateStr]) dailyRev[b.dateStr] = 0;
@@ -1197,9 +1314,8 @@
             });
 
             document.getElementById('stat-1d').innerText = formatMoney(t1d);
+            document.getElementById('stat-1d-cups').innerText = t1d_cups + " ly";
 
-            const year = parseInt(document.getElementById('stat-year-select').value);
-            const month = parseInt(document.getElementById('stat-month-select').value) - 1;
             const lastDate = new Date(year, month + 1, 0).getDate();
             let startDay = new Date(year, month, 1).getDay(); startDay = startDay === 0 ? 6 : startDay - 1;
 
@@ -1217,7 +1333,9 @@
                 
                 grid.innerHTML += `<div class="cal-cell ${bg} ${isToday}"><div class="cal-date">${i}</div>${revHtml}</div>`;
             }
+            
             document.getElementById('stat-month').innerText = formatMoney(tMonth);
+            document.getElementById('stat-month-cups').innerText = tMonth_cups + " ly";
         }
 
         window.exportBillHistoryCSV = function() {
