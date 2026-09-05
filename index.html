@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#FF6600">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Melon Coffee">
+    <meta name="apple-mobile-web-app-title" content="Melon POS">
     
     <link rel="icon" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
@@ -115,9 +115,9 @@
         .btn-size { flex: 1; padding: 8px 4px; border: 1px solid var(--cam-nhat); background: var(--cam-nhat); color: var(--cam-dam); border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8em; transition: 0.2s;}
         .btn-size:hover { background: var(--cam-chinh); color: white; border-color: var(--cam-chinh); }
         
-        .cashier-input { width: 100%; padding: 12px 15px; border: 1px solid var(--vien); border-radius: 10px; margin-bottom: 15px; outline: none; font-size: 0.95em; background: #F9FAFB; transition: 0.2s;}
+        .cashier-input { width: 100%; padding: 12px 15px; border: 1px solid var(--vien); border-radius: 10px; outline: none; font-size: 0.95em; background: #F9FAFB; transition: 0.2s;}
         .cashier-input:focus { border-color: var(--cam-chinh); background: white; box-shadow: 0 0 0 3px rgba(255,102,0,0.1); }
-        .cart-items { flex: 1; overflow-y: auto; border-top: 1px dashed var(--vien); border-bottom: 1px dashed var(--vien); padding: 10px 0; margin-bottom: 15px; }
+        .cart-items { flex: 1; overflow-y: auto; border-top: 1px dashed var(--vien); border-bottom: 1px dashed var(--vien); padding: 10px 0; margin-bottom: 15px; margin-top: 15px; }
         .cart-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9em; align-items: center; }
         .cart-total { font-size: 1.3em; font-weight: 800; text-align: right; margin-bottom: 15px; color: #111827; }
         .btn-thanh-toan { background: var(--cam-chinh); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.05em; font-weight: 800; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; flex-shrink: 0; box-shadow: 0 4px 15px rgba(255,102,0,0.3); transition: 0.2s;}
@@ -239,7 +239,11 @@
         body.customer-mode .main-content { padding: 15px !important; }
         body.customer-mode #sidebar-badge { display: none !important; }
         body.customer-mode .tab-pane::after { display: none !important; }
-        body.customer-mode .cashier-input { display: none !important; }
+        
+        /* Ẩn input thu ngân cũ, hiện form nhập thông tin khách hàng */
+        body.customer-mode #cashier-name { display: none !important; } 
+        body.customer-mode #customer-info-fields { display: flex !important; }
+
         body.customer-mode .btn-thanh-toan { background: #10B981 !important; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important; }
         body.customer-mode .btn-thanh-toan:hover { background: #059669 !important; }
 
@@ -275,9 +279,7 @@
                 width: 100vw; overflow-y: auto; -webkit-overflow-scrolling: touch;
             }
             
-            .tab-pane::after {
-                display: none !important; /* Xóa khoảng trống thừa cản đường dưới cùng */
-            }
+            .tab-pane::after { display: none !important; }
             
             .pos-layout { flex-direction: column; gap: 15px; height: auto !important; overflow: visible; padding-bottom: calc(95px + env(safe-area-inset-bottom)); }
             .pos-products { max-height: none; overflow: visible; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
@@ -301,7 +303,6 @@
             .stat-box .val { font-size: 1.4em; }
             .month-picker-container { width: 100%; justify-content: space-between; }
             
-            /* Đổi từ margin sang padding để viền trắng kéo tuột xuống tận dưới cùng màn hình */
             .manage-container, .table-container, .recipe-grid, .calendar-grid {
                 margin-bottom: 0 !important;
                 padding-bottom: calc(105px + env(safe-area-inset-bottom)) !important;
@@ -329,6 +330,8 @@
             #print-section { display: block !important; position: static; width: 100%; color: black; font-size: 14px; padding: 5px; }
             .thermal-print-wrapper { width: 100%; margin: 0 auto; }
             .thermal-print-wrapper p { margin: 2px 0; }
+            /* Không in icon Google Map ra giấy vì trên giấy không bấm được */
+            .no-print-icon { display: none !important; }
         }
     </style>
 </head>
@@ -376,7 +379,16 @@
             <div class="pos-layout">
                 <div class="pos-products" id="render-products"></div>
                 <div class="pos-cart">
-                    <input type="text" class="cashier-input" id="cashier-name" placeholder="Tên thu ngân (VD: Yến Nhi)">
+                    <!-- Form nhập của thu ngân -->
+                    <input type="text" class="cashier-input" id="cashier-name" placeholder="Tên thu ngân (VD: Yến Nhi)" style="margin-bottom: 15px;">
+                    
+                    <!-- Form nhập dành riêng cho Khách (ẩn mặc định, chỉ hiện khi có đuôi ?mode=khach) -->
+                    <div id="customer-info-fields" style="display: none; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" class="cashier-input" id="cust-name" placeholder="Tên người nhận (* Bắt buộc)" style="margin-bottom: 0;">
+                        <input type="tel" class="cashier-input" id="cust-phone" placeholder="Số điện thoại (* Bắt buộc)" style="margin-bottom: 0;">
+                        <textarea class="cashier-input" id="cust-address" placeholder="Địa chỉ giao hàng chi tiết (nếu có)" style="margin-bottom: 0; resize: vertical; height: 60px; font-family: inherit;"></textarea>
+                    </div>
+
                     <h3 id="cart-title" style="color: var(--cam-chinh); margin-bottom: 10px; font-size: 1.1em; font-weight: 800;">Giỏ hàng hiện tại</h3>
                     <div class="cart-items" id="render-cart"></div>
                     <div class="cart-total">Tổng: <span id="cart-total-val" style="color: var(--cam-chinh);">0đ</span></div>
@@ -456,7 +468,7 @@
                         <tr>
                             <th>Mã Bill</th>
                             <th>Thời Gian</th>
-                            <th>Thu Ngân</th>
+                            <th>Người Bán / Khách Đặt</th>
                             <th>Chi Tiết Món</th>
                             <th>Tổng Tiền</th>
                             <th style="text-align: center;">Thao Tác</th>
@@ -705,7 +717,6 @@
             for(let i=2024; i<=2060; i++) ySelect.innerHTML += `<option value="${i}">Năm ${i}</option>`;
             mSelect.value = now.getMonth() + 1; ySelect.value = now.getFullYear();
             
-            // Khởi tạo ngày hôm nay cho ô tải Lịch sử Bill
             const historyDateInput = document.getElementById('history-export-date');
             if(historyDateInput) {
                 const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
@@ -818,9 +829,21 @@
         window.checkout = async function() {
             if(cart.length === 0) return alert("Giỏ hàng đang trống!");
 
-            const cashierName = isCustomerMode 
-                ? "Khách QR" 
-                : (document.getElementById('cashier-name').value.trim() || "Thu ngân");
+            let cashierName = "Thu ngân";
+            let cName = "", cPhone = "", cAddress = "";
+
+            if (isCustomerMode) {
+                cName = document.getElementById('cust-name').value.trim();
+                cPhone = document.getElementById('cust-phone').value.trim();
+                cAddress = document.getElementById('cust-address').value.trim();
+                
+                if (!cName || !cPhone) {
+                    return alert("Vui lòng nhập đầy đủ Tên và Số điện thoại để quán liên hệ nhé!");
+                }
+                cashierName = "Khách QR: " + cName; 
+            } else {
+                cashierName = document.getElementById('cashier-name').value.trim() || "Thu ngân";
+            }
 
             const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             const now = new Date();
@@ -828,7 +851,10 @@
                 dateStr: getCustomDateString(now), 
                 timeStr: getCustomTimeString(now), 
                 dateObj: now.getTime(), 
-                cashier: cashierName, 
+                cashier: cashierName,
+                custName: cName,
+                custPhone: cPhone,
+                custAddress: cAddress,
                 items: [...cart], 
                 total: total, 
                 status: "pending" 
@@ -840,8 +866,12 @@
                 cart = []; renderCart(); 
                 
                 if (isCustomerMode) {
-                    alert("Gửi yêu cầu gọi món thành công! Quán đang pha chế cho bạn nhé.");
+                    document.getElementById('cust-name').value = '';
+                    document.getElementById('cust-phone').value = '';
+                    document.getElementById('cust-address').value = '';
+                    alert("Gửi yêu cầu gọi món thành công! Quán đang chuẩn bị cho bạn nhé.");
                 } else {
+                    document.getElementById('cashier-name').value = '';
                     alert("Thanh toán thành công! Đơn đã đồng bộ lên Cloud.");
                 }
             } catch(e) { alert("Lỗi khi lưu đơn hàng lên cloud: " + e.message); }
@@ -874,7 +904,16 @@
             } else {
                 pendingOrders.forEach((o) => {
                     let itemsHtml = o.items.map(i => `<div class="kitchen-item"><b><span style="color:var(--cam-chinh);">${i.qty} x</span></b> ${i.name} (Size ${i.size})</div>`).join('');
-                    list.innerHTML += `<div class="kitchen-order"><h3 style="color: var(--cam-chinh); margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px dashed #D1D5DB; padding-bottom: 8px;">Mã: ${o.id.substring(0,6).toUpperCase()} <span style="color:#6B7280;">${o.timeStr} (${o.cashier})</span></h3>${itemsHtml}<button class="btn-done" onclick="window.finishOrder('${o.id}')"><i class="fa-solid fa-check-double"></i> ĐÃ PHA XONG</button></div>`;
+                    
+                    let custInfoHtml = '';
+                    if (o.custName || o.custPhone || o.custAddress) {
+                        custInfoHtml = `<div style="font-size: 0.85em; color: #4B5563; margin-bottom: 8px; background: #fff; padding: 8px; border-radius: 6px; border: 1px dashed #D1D5DB;">
+                            <b><i class="fa-solid fa-user"></i> ${o.custName || ''}</b> - <i class="fa-solid fa-phone"></i> ${o.custPhone || ''}<br>
+                            <i class="fa-solid fa-location-dot" style="color: var(--cam-chinh);"></i> ${o.custAddress || 'Tại bàn'}
+                        </div>`;
+                    }
+
+                    list.innerHTML += `<div class="kitchen-order"><h3 style="color: var(--cam-chinh); margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px dashed #D1D5DB; padding-bottom: 8px;">Mã: ${o.id.substring(0,6).toUpperCase()} <span style="color:#6B7280;">${o.timeStr}</span></h3>${custInfoHtml}${itemsHtml}<button class="btn-done" onclick="window.finishOrder('${o.id}')"><i class="fa-solid fa-check-double"></i> ĐÃ PHA XONG</button></div>`;
                 });
             }
             document.getElementById('kitchen-modal').style.display = 'flex';
@@ -1024,7 +1063,6 @@
             }
         }
 
-        // --- LỊCH SỬ BILL HIỂN THỊ CÓ NGĂN CÁCH ---
         window.renderHistory = function() {
             const tbody = document.getElementById('render-history');
             tbody.innerHTML = '';
@@ -1063,12 +1101,26 @@
             if(!bill) return;
             currentPreviewBillId = billId;
             let itemsHtml = bill.items.map(i => `<div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><div style="flex: 2;">${i.name} (${i.size})</div><div style="flex: 1; text-align: center;">x${i.qty}</div><div style="flex: 1; text-align: right;">${formatMoney(i.price * i.qty)}</div></div>`).join('');
+            
+            // Xử lý hiển thị thông tin Shipper & Icon Google Maps
+            let customerHtml = '';
+            if (bill.custName || bill.custPhone || bill.custAddress) {
+                let mapLink = bill.custAddress ? ` <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(bill.custAddress)}" target="_blank" class="no-print-icon" style="color: #10B981; font-size: 1.2em; text-decoration: none; margin-left: 8px;" title="Mở bản đồ"><i class="fa-solid fa-map-location-dot"></i></a>` : '';
+                customerHtml = `
+                    <div style="border-bottom: 1px dashed #9CA3AF; margin: 15px 0;"></div>
+                    <p style="margin: 4px 0;"><b>Tên Khách:</b> ${bill.custName || ''}</p>
+                    <p style="margin: 4px 0;"><b>SĐT:</b> ${bill.custPhone || ''}</p>
+                    <p style="margin: 4px 0; display: flex; align-items: center;"><b>Địa chỉ:</b> <span style="margin-left:5px;">${bill.custAddress || 'Lấy mang đi/Tại quán'}</span> ${mapLink}</p>
+                `;
+            }
+
             document.getElementById('preview-receipt-content').innerHTML = `
                 <div style="text-align:center; margin-bottom: 10px;"><h2 style="margin:0; font-size: 1.6em; font-weight:800;">MELON COFFEE</h2></div>
                 <div style="border-bottom: 1px dashed #9CA3AF; margin-bottom: 15px;"></div>
                 <p style="margin: 4px 0;"><b>Mã HĐ:</b> ${bill.id.substring(0,6).toUpperCase()}</p>
                 <p style="margin: 4px 0;"><b>Ngày:</b> ${bill.timeStr} - ${bill.dateStr}</p>
-                <p style="margin: 4px 0;"><b>Thu ngân / Bàn:</b> ${bill.cashier}</p>
+                <p style="margin: 4px 0;"><b>Thu ngân:</b> ${bill.cashier}</p>
+                ${customerHtml}
                 <div style="border-bottom: 1px dashed #9CA3AF; margin: 15px 0;"></div>
                 <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 8px;"><div style="flex: 2;">Tên món</div><div style="flex: 1; text-align: center;">SL</div><div style="flex: 1; text-align: right;">TT</div></div>
                 ${itemsHtml}
@@ -1177,23 +1229,20 @@
             document.getElementById('stat-month').innerText = formatMoney(tMonth);
         }
 
-        // --- CẬP NHẬT CSV LỊCH SỬ BILL: CHỈ TẢI NGÀY ĐƯỢC CHỌN + TỔNG LY, TỔNG TIỀN ---
         window.exportBillHistoryCSV = function() {
             const dateInput = document.getElementById('history-export-date').value;
             if (!dateInput) return alert("Vui lòng chọn ngày để xuất file!");
 
-            // Đổi từ format input date YYYY-MM-DD sang format của app DD/MM/YYYY
             const parts = dateInput.split('-');
             const targetDateStr = `${parts[2]}/${parts[1]}/${parts[0]}`;
 
-            // Lọc ra các bill chỉ nằm trong ngày đó
             const filteredBills = bills.filter(b => b.dateStr === targetDateStr);
             
             if (filteredBills.length === 0) {
                 return alert(`Không có hóa đơn nào được bán trong ngày ${targetDateStr}`);
             }
 
-            let csv = `"Ma Bill","Ngay Gio","Thu Ngan","Ten Thuc Uong","Size","So Luong","Don Gia","Tong Cong"\n`;
+            let csv = `"Ma Bill","Ngay Gio","Thu Ngan/Nguoi Dat","Ten Thuc Uong","Size","So Luong","Don Gia","Tong Cong"\n`;
             let totalCups = 0; 
             let dailyTotalMoney = 0;
             
@@ -1203,7 +1252,7 @@
                 let dateTime = `${cleanDate} ${b.timeStr}`;
                 
                 b.items.forEach((item, index) => {
-                    let cashierCol = (index === 0) ? b.cashier : "";
+                    let cashierCol = (index === 0) ? (b.cashier || "") : "";
                     csv += `"${b.id.substring(0,6).toUpperCase()}","${dateTime}","${cashierCol}","${item.name}","${item.size}",${item.qty},${item.price},${item.price * item.qty}\n`;
                     totalCups += item.qty; 
                 });
