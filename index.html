@@ -339,6 +339,9 @@
 </head>
 <body>
 
+    <!-- THẺ ÂM THANH MỚI: Tự động tải file chuong.mp3 -->
+    <audio id="alert-sound" src="chuong.mp3" preload="auto"></audio>
+
     <div id="splash-screen">
         <img src="icon.png" alt="Loading...">
         <div class="loading-text">Đang tải hệ thống<span>.</span><span>.</span><span>.</span></div>
@@ -683,57 +686,42 @@
         // ==========================================
         // --- CẤP QUYỀN ÂM THANH & THÔNG BÁO PUSH ---
         // ==========================================
-        let audioCtx = null;
+        let isAudioUnlocked = false;
         
-        function initAudioAndNotifications() {
-            // Mở luồng âm thanh
-            try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-            } catch(e) { console.log("Audio Init Error", e); }
+        function unlockAudioAndNotifications() {
+            if (isAudioUnlocked) return;
             
             // Yêu cầu quyền thông báo đẩy của hệ điều hành iPhone/Android
             try {
-                if ("Notification" in window && Notification.permission === "default") {
+                if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                     Notification.requestPermission();
                 }
-            } catch(e) { console.log("Notification Init Error", e); }
+            } catch(e) { console.log("Notification Error", e); }
+
+            // Thử phát file âm thanh rỗng hoặc dừng ngay để Safari hiểu là đã được cấp quyền phát
+            try {
+                const audio = document.getElementById('alert-sound');
+                if(audio) {
+                    audio.play().then(() => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                        isAudioUnlocked = true;
+                    }).catch(e => console.log("Lỗi cấp quyền audio:", e));
+                }
+            } catch(e) {}
         }
         
         // Buộc người dùng chạm màn hình 1 lần để iPhone cấp quyền phát loa
-        document.addEventListener('click', initAudioAndNotifications, { once: true });
-        document.addEventListener('touchstart', initAudioAndNotifications, { once: true });
+        document.addEventListener('click', unlockAudioAndNotifications, { once: true });
+        document.addEventListener('touchstart', unlockAudioAndNotifications, { once: true });
 
-        // Hàm phát giọng đọc AI "Mê lôn"
+        // Hàm phát âm thanh từ file chuong.mp3
         function playAlertSound() {
             try {
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel(); // Dọn dẹp hàng đợi cũ bị kẹt
-                    const utterance = new SpeechSynthesisUtterance("Mê lôn, có đơn mới");
-                    utterance.lang = 'vi-VN'; // Giọng Việt
-                    utterance.rate = 1.0; 
-                    utterance.pitch = 1.5; // Đẩy cao độ lên cho dễ thương
-                    window.speechSynthesis.speak(utterance);
-                } else if (audioCtx) {
-                    // Fallback tiếng bíp nếu máy không có giọng đọc
-                    for (let i = 0; i < 3; i++) {
-                        setTimeout(() => {
-                            const osc = audioCtx.createOscillator();
-                            const gain = audioCtx.createGain();
-                            osc.type = 'sine';
-                            osc.frequency.setValueAtTime(850, audioCtx.currentTime); 
-                            gain.gain.setValueAtTime(1, audioCtx.currentTime);
-                            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-                            osc.connect(gain);
-                            gain.connect(audioCtx.destination);
-                            osc.start();
-                            osc.stop(audioCtx.currentTime + 0.2);
-                        }, i * 300);
-                    }
+                const audio = document.getElementById('alert-sound');
+                if(audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(e => console.log("Không thể phát âm thanh:", e));
                 }
             } catch(e) { console.error("Lỗi âm thanh:", e); }
         }
@@ -795,33 +783,27 @@
 
             // Nếu máy Thu ngân nhận đơn mới
             if (!isFirstLoad && hasNewOrder && !isCustomerMode) {
-                // 1. Rung máy Android
-                if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]); 
                 
-                // 2. Phát âm thanh "Mê lôn có đơn mới"
+                // 1. Phát file mp3 chuông
                 playAlertSound();
                 
-                // 3. Hiện Popup thông báo của Web
+                // 2. Hiện Popup thông báo của Web
                 window.showKitchenToast();
 
-                // 4. Bắn Notification lên hệ điều hành
+                // 3. Bắn Notification lên hệ điều hành (Kèm rung hệ thống)
                 if ("Notification" in window && Notification.permission === "granted" && newOrderData) {
                     let totalCups = newOrderData.items ? newOrderData.items.reduce((s, i) => s + (i.qty || 0), 0) : 0;
                     let bodyText = `Khách: ${newOrderData.custName || 'Tại quầy'}\nSố lượng: ${totalCups} ly`;
                     
                     try {
-                        navigator.serviceWorker.ready.then(function(registration) {
-                            registration.showNotification('Mê Lôn: Có đơn mới!', {
-                                body: bodyText,
-                                icon: 'icon.png',
-                                vibrate: [200, 100, 200, 100, 400],
-                                tag: 'new-order'
-                            });
-                        }).catch(function() {
-                            new Notification('Mê Lôn: Có đơn mới!', { body: bodyText, icon: 'icon.png' });
+                        let notification = new Notification('Mê Lôn: Có đơn mới!', { 
+                            body: bodyText, 
+                            icon: 'icon.png',
+                            vibrate: [200, 100, 200, 100, 400] 
                         });
+                        notification.onclick = function() { window.focus(); };
                     } catch(e) {
-                        new Notification('Mê Lôn: Có đơn mới!', { body: bodyText, icon: 'icon.png' });
+                        console.log("Lỗi tạo thông báo:", e);
                     }
                 }
             }
